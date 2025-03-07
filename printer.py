@@ -1,3 +1,4 @@
+ 
 def print_ocl_constraints(constraints):
     print("\nOCL Constraints:")
     for constraint in constraints:
@@ -5,6 +6,7 @@ def print_ocl_constraints(constraints):
         print(f"    Expression: {constraint['expression']}")
         print(f"    Applies to: {constraint['applies_to']}")
 
+# TODO: Modify print fucntion to print the new data structure
 def print_classes(classes):
     print("\nUML Classes and Attributes:")
     for _, data in classes.items():

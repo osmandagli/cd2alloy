@@ -5,71 +5,55 @@ def read_xmi(xmi_file):
     root = tree.getroot()
         
     namespace = {
-        'xmi': 'http://www.omg.org/XMI',
-        'uml': 'http://www.omg.org/spec/UML/20090901',
-        'ocl': 'http://www.omg.org/spec/OCL/20090901'
+        'UML': 'href://org.omg/UML/1.3' 
     }
     
-    elements = {}  # Stores {id: name} mapping
     classes = {}   # Stores class details 
                    # {id: {"name": class_name, 
                    # "attribute": [],
                    # "attribute_type": [],
                    # "inherits": None}}
-
+    
     # Find all classes
-    for uml_class in root.findall('.//uml:Class', namespace):
-        class_id = uml_class.get('{http://www.omg.org/XMI}id')
-        class_name = uml_class.get('name', 'UnnamedClass')
-        classes[class_id] = {"name": class_name, "attribute": [], "attribute_type": [], "inherits": None, "associations": []}
-        elements[class_id] = class_name  # Store class for lookup
+    for uml_class in root.findall('.//UML:Class', namespace):
+        class_id = uml_class.get('xmi.id')
+        class_name = uml_class.get('name', None)
+        if class_name is None:
+            continue
+        classes[class_id] = {"name": class_name, "attribute": [], "attribute_type": [], "inheritance": None}
 
         # Extract attributes
-        for attr in uml_class.findall('.//uml:Property', namespace):
-            attr_id = attr.get('{http://www.omg.org/XMI}id')
-            attr_name = attr.get('name', 'UnnamedAttribute')
-            attr_type = attr.get('type', 'UnknownType')
-            classes[class_id]["attribute"].append(f"{attr_name}")
-            classes[class_id]["attribute_type"].append(f"{attr_type}")
-            elements[attr_id] = f"{class_name}.{attr_name}"  
-        
-        # Extract inheritance relationships (Use when inheritance declared within class)
-        for generalization in uml_class.findall('.//uml:Generalization', namespace):
-            parent_id = generalization.get('general')
-            classes[class_id]["inherits"] = parent_id
-            print(f"{class_name} inherits from {parent_id}")
+        for attr in uml_class.findall('.//UML:Classifier.feature/UML:Attribute', namespace):
+            attrWithType = attr.get('name', 'UnnamedAttribute')
+            attr, type = attrWithType.split(":")
+            classes[class_id]["attribute"].append(attr)
+            classes[class_id]["attribute_type"].append(type.strip())
             
-    # Extract inheritance relationships (Use when inheritance declared separately)
-    #for generalization in root.findall('.//uml:Generalization', namespace):
-    #    child_id = generalization.get('specific')  # Subclass ID
-    #    print("Child id is ", class_id)
-    #    parent_id = generalization.get('general')  # Superclass ID
-    #    print("Parent id is ", parent_id)
-    #    if child_id in classes and parent_id in classes:
-    #        classes[child_id]["inherits"] = classes[parent_id]["name"]
-    
-    # TODO: Extract OCL Constraints
-    constraints = []
-    #for constraint in root.findall('.//uml:Constraint', namespace):
-    #    constraint_id = constraint.get('{http://www.omg.org/XMI}id')
-    #    constraint_name = constraint.get('name', 'UnnamedConstraint')
-    #
-    #    # Extract OCL Expression
-    #    expression_element = constraint.find('.//ocl:Expression', namespace)
-    #    expression = expression_element.text if expression_element is not None else "No Expression"
-    #
-    #    # Extract constrained element reference
-    #    constrained_element = constraint.find('.//uml:ConstrainedElement', namespace)
-    #    constrained_id = constrained_element.get('{http://www.omg.org/XMI}idref') if constrained_element is not None else "Unknown"
-    #
-    #    # Lookup the name using stored ID mappings
-    #    applies_to = elements.get(constrained_id, f"Unknown({constrained_id})")
-    #
-    #    constraints.append({
-    #        "id": constraint_id,
-    #        "name": constraint_name,
-    #        "expression": expression,
-    #        "applies_to": applies_to
-    #    })
+    # Extract the inheritance
+    for generalization in root.findall('.//UML:Generalization', namespace):
+        child_id = generalization.find('.//UML:Generalization.child/UML:Class', namespace).get('xmi.idref')
+        parent_id = generalization.find('.//UML:Generalization.parent/UML:Class', namespace).get('xmi.idref')
 
-    return classes, constraints
+        if child_id in classes and parent_id in classes:
+            classes[child_id]["inheritance"] = classes[parent_id]["name"]
+
+    associations = [] # Stores association details
+                      # [("association_name", "from_class", end1_mult, "to_class", end2_mult)]
+    for assoc in root.findall('.//UML:Association', namespace):
+        assoc_name = assoc.get('name', 'UnnamedAssociation')
+        ends = assoc.findall('.//UML:Association.connection/UML:AssociationEnd', namespace)
+
+        if len(ends) == 2:
+            end1_type = ends[0].get('type', 'Unknown')
+            end2_type = ends[1].get('type', 'Unknown')
+            end1_mult = ends[0].get('name', 'Unknown')
+            end2_mult = ends[1].get('name', 'Unknown')
+
+            from_class = classes.get(end1_type, {}).get("name", f"Unknown({end1_type})")
+            to_class = classes.get(end2_type, {}).get("name", f"Unknown({end2_type})")
+
+            associations.append((assoc_name, from_class, end1_mult, to_class, end2_mult))
+    
+    # TODO: Extract constraints
+    
+    return classes, associations, None

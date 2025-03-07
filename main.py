@@ -1,10 +1,11 @@
 import xmi_reader
 #import printer
-import translater
+from translater import translater
 
-classes, _ = xmi_reader.read_xmi("class_diagram_gpt.xmi")
+classes, associations, _ = xmi_reader.read_xmi("plantuml_to_argouml.xmi")
 
 #printer.print_classes(classes)
 #printer.print_ocl_constraints(constraints)
-for _,umlClass in classes.items():
-    translater.class_to_sig(umlClass)
+#printer.print_associations(associations)
+
+translater(classes, associations)

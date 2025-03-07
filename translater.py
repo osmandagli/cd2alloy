@@ -1,18 +1,18 @@
-def class_to_sig(umlClass):
+def translater(classes, associations) -> None:
     
-    builtInTypes = ["String", "Integer"]
-    
-    createAttrs(umlClass)
-    
-    if umlClass['inherits'] is not None:
-        print(f"sig {umlClass['name']} extends {umlClass['inherits']} {{")
-    else:
-        print(f"sig {umlClass['name']}: {{")
+    for umlClass in classes.values():
         
-    for attr, attr_type in zip(umlClass["attribute"], umlClass["attribute_type"]):
-        print(f"  {attr}: one {attr_type}")
+        createAttrs(umlClass)
         
-    print("}")
+        if umlClass['inheritance'] is None:
+            print(f"sig {umlClass['name']}: {{")
+        else:
+            print(f"sig {umlClass['name']} extends {umlClass['inheritance']} {{")
+            
+        for attr, attr_type in zip(umlClass["attribute"], umlClass["attribute_type"]):
+            print(f"  {attr}: one {attr_type}")
+            
+        print("}")
     
 def createAttrs(umlClass) -> None:
     builtInTypes = ["String", "Integer", "Float"]

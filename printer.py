@@ -16,3 +16,8 @@ def print_classes(classes):
         print("    Attributes:")
         for attr in data["attribute"]:
             print(f"      - {attr}")
+
+def print_associations(associations):
+    print("\nAssociations (Relationships):")
+    for assoc_name, from_class, mult1, to_class, mult2 in associations:
+        print(f"  - {from_class} ({mult1}) ---[{assoc_name}]--- ({mult2}) {to_class}")

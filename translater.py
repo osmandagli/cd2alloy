@@ -1,21 +1,21 @@
-def translater(classes, associations) -> None:
-    
-    for umlClass in classes.values():
-        
-        createAttrs(umlClass)
-        
-        if umlClass['inheritance'] is None:
-            print(f"sig {umlClass['name']}: {{")
-        else:
-            print(f"sig {umlClass['name']} extends {umlClass['inheritance']} {{")
-            
-        for attr, attr_type in zip(umlClass["attribute"], umlClass["attribute_type"]):
-            print(f"  {attr}: one {attr_type}")
-            
-        print("}")
-    
-def createAttrs(umlClass) -> None:
-    builtInTypes = ["String", "Integer", "Float"]
-    for attr_type in umlClass["attribute_type"]:
-        if attr_type not in builtInTypes:
+from umlclass import UMLClass
+
+def create_attrs(uml_class: UMLClass) -> None:
+    built_in_types = ["String", "Integer", "Float"]
+    for _, attr_type in uml_class.attributes:
+        if attr_type not in built_in_types:
             print(f"sig {attr_type} {{}}")
+
+def translater(classes: dict[str, UMLClass]) -> None:
+    for uml_class in classes.values():
+        create_attrs(uml_class)
+        
+        if uml_class.inheritance is None:
+            print(f"sig {uml_class.name} {{")
+        else:
+            print(f"sig {uml_class.name} extends {uml_class.inheritance} {{")
+        
+        for attr, attr_type in uml_class.attributes:
+            print(f"  {attr}: one {attr_type}")
+        
+        print("}")

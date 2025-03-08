@@ -1,11 +1,11 @@
 import xmi_reader
-#import printer
+from printer import print_associations
 from translater import translater
 
-classes, associations, _ = xmi_reader.read_xmi("plantuml_to_argouml.xmi")
+classes, _= xmi_reader.read_xmi("plantuml_to_argouml.xmi")
 
 #printer.print_classes(classes)
 #printer.print_ocl_constraints(constraints)
-#printer.print_associations(associations)
+print_associations(classes)
 
-translater(classes, associations)
+translater(classes)

@@ -5,6 +5,7 @@ class UMLClass:
         self.attributes = []  # List of (attribute, type)
         self.inheritance = None  # Parent class name
         self.associations = []  # List of (assoc_name, from_class, from_mult, to_class, to_mult)
+        self.facts = [] # List of sig facts
     
     def add_attribute(self, name, attr_type):
         self.attributes.append((name, attr_type))
@@ -12,8 +13,11 @@ class UMLClass:
     def set_inheritance(self, parent_name):
         self.inheritance = parent_name
     
-    def add_association(self, assoc_name, from_class, from_mult, to_class, to_mult):
-        self.associations.append((assoc_name, from_class, from_mult, to_class, to_mult))
+    def add_association(self, assoc_name: str, from_class: str, from_mult: str, to_class: str, to_mult: str):
+        self.associations.append([assoc_name, from_class, from_mult, to_class, to_mult])
+        
+    def add_fact(self, fact: tuple):
+        self.facts.append(fact)
         
     def print_associations(self):
         print(f"Associations for class {self.name}:")

@@ -9,3 +9,6 @@ __pycache__/
 
 # Ignore output.alloy specifically
 output.alloy
+
+# Ignore alloy jars
+alloy_jar/

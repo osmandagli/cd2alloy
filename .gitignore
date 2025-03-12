@@ -1,4 +1,11 @@
-__pycache__
-output.alloy
+# Ignore Python cache
+__pycache__/
+
+# Ignore all .xmi files
 *.xmi
+
+# Ignore log files
 *.log
+
+# Ignore output.alloy specifically
+output.alloy

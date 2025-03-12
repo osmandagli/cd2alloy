@@ -11,3 +11,6 @@ venv/
 
 # Ignore log files
 *.log
+
+# Ignore alloy jars
+alloy_jar/

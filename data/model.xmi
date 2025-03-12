@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmlns:xmi="http://www.omg.org/XMI" xmlns:uml="http://www.omg.org/spec/UML/20090901">
+    <uml:Model xmi:id="cd1" name="cd1">
+        
+        <!-- Employee Class -->
+        <uml:Class xmi:id="Employee" name="Employee"/>
+        
+        <!-- Driver Class (inherits from Employee) -->
+        <uml:Class xmi:id="Driver" name="Driver">
+            <uml:Generalization general="Employee"/>
+        </uml:Class>
+        
+        <!-- Address Class -->
+        <uml:Class xmi:id="Address" name="Address"/>
+        
+        <!-- Car Class -->
+        <uml:Class xmi:id="Car" name="Car">
+            <uml:Property xmi:id="color" name="color" type="ColorKind"/>
+        </uml:Class>
+        
+        <!-- Enumeration: ColorKind -->
+        <uml:Enumeration xmi:id="ColorKind" name="ColorKind">
+            <uml:OwnedLiteral xmi:id="black" name="black"/>
+            <uml:OwnedLiteral xmi:id="red" name="red"/>
+            <uml:OwnedLiteral xmi:id="white" name="white"/>
+        </uml:Enumeration>
+        
+        <!-- Associations -->
+        <uml:Association xmi:id="assoc1">
+            <uml:MemberEnd xmi:idref="Employee"/> 
+            <uml:MemberEnd xmi:idref="Address" lower="1" upper="3"/>
+        </uml:Association>
+
+        <uml:Association xmi:id="assoc2">
+            <uml:MemberEnd xmi:idref="Driver" lower="1"/>
+            <uml:MemberEnd xmi:idref="Car" lower="0" upper="1"/>
+        </uml:Association>
+    </uml:Model>
+</xmi:XMI>

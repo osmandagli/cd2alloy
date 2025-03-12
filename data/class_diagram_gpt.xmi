@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmlns:xmi="http://www.omg.org/XMI" xmlns:uml="http://www.omg.org/spec/UML/20090901">
+    <uml:Model xmi:id="ClassDiagram" name="ClassDiagram">
+        
+        <!-- Person Class -->
+        <uml:Class xmi:id="Person" name="Person">
+            <uml:Property xmi:id="name" name="name" type="String"/>
+            <uml:Property xmi:id="age" name="age" type="Integer"/>
+        </uml:Class>
+        
+        <!-- Employee Class (inherits from Person) -->
+        <uml:Class xmi:id="Employee" name="Employee">
+            <uml:Generalization general="Person"/>
+            <uml:Property xmi:id="employeeID" name="employeeID" type="Integer"/>
+            <uml:Property xmi:id="salary" name="salary" type="Float"/>
+        </uml:Class>
+        
+        <!-- Department Class -->
+        <uml:Class xmi:id="Department" name="Department">
+            <uml:Property xmi:id="deptName" name="deptName" type="String"/>
+        </uml:Class>
+        
+        <!-- Company Class -->
+        <uml:Class xmi:id="Company" name="Company">
+            <uml:Property xmi:id="companyName" name="companyName" type="String"/>
+        </uml:Class>
+        
+        <!-- Project Class -->
+        <uml:Class xmi:id="Project" name="Project">
+            <uml:Property xmi:id="projectName" name="projectName" type="String"/>
+        </uml:Class>
+        
+        <!-- Car Class -->
+        <uml:Class xmi:id="Car" name="Car">
+            <uml:Property xmi:id="licensePlate" name="licensePlate" type="String"/>
+        </uml:Class>
+        
+        <!-- Relationships -->
+        <uml:Association xmi:id="assoc1">
+            <uml:MemberEnd xmi:idref="Employee"/>
+            <uml:MemberEnd xmi:idref="Car"/>
+        </uml:Association>
+        
+        <uml:Association xmi:id="assoc2" aggregation="shared">
+            <uml:MemberEnd xmi:idref="Department"/>
+            <uml:MemberEnd xmi:idref="Project"/>
+        </uml:Association>
+        
+        <uml:Association xmi:id="assoc3" aggregation="composite">
+            <uml:MemberEnd xmi:idref="Company"/>
+            <uml:MemberEnd xmi:idref="Department"/>
+        </uml:Association>
+    </uml:Model>
+</xmi:XMI>

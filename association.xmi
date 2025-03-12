@@ -11,28 +11,45 @@
             <UML:Namespace.ownedElement>
                 <UML:Class name="Order" xmi.id="cl0002">
                     <UML:Classifier.feature>
-                        <UML:Attribute name="orderId: int" visibility="private" xmi.id="att5"/>
-                        <UML:Attribute name="userId: int" visibility="private" xmi.id="att6"/>
-                        <UML:Attribute name="orderDate: date" visibility="private" xmi.id="att7"/>
-                        <UML:Attribute name="status: string" visibility="private" xmi.id="att8"/>
-                        <UML:Attribute name="totalAmount: float" visibility="private" xmi.id="att9"/>
+                        <UML:Attribute name="orderDate: Date" xmi.id="att9"/>
                     </UML:Classifier.feature>
                 </UML:Class>
                 <UML:Class name="Person" xmi.id="cl0003">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="User" xmi.id="cl0004">
                     <UML:Classifier.feature>
-                        <UML:Attribute name="userId: int" visibility="private" xmi.id="att10"/>
-                        <UML:Attribute name="username: string" visibility="private" xmi.id="att11"/>
-                        <UML:Attribute name="email: string" visibility="private" xmi.id="att12"/>
-                        <UML:Attribute name="passwordHash: string" visibility="private" xmi.id="att13"/>
-                        <UML:Attribute name="address: string" visibility="private" xmi.id="att14"/>
+                        <UML:Attribute name="userId: int" xmi.id="att10"/>
+                        <UML:Attribute name="status: Status" xmi.id="att11"/>
                     </UML:Classifier.feature>
                 </UML:Class>
-                <UML:Association name="refers" xmi.id="ass15">
+                <UML:Class name="License" xmi.id="cl0005">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Association name="has" xmi.id="ass12">
                     <UML:Association.connection>
-                        <UML:AssociationEnd association="ass15" name="1" type="cl0002" xmi.id="end16">
+                        <UML:AssociationEnd association="ass12" name="0..1" type="cl0004" xmi.id="end13">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
-                        <UML:AssociationEnd association="ass15" name="2..4" type="cl0003" xmi.id="end17">
+                        <UML:AssociationEnd aggregation="composite" association="ass12" name="1" type="cl0005" xmi.id="end14">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Generalization name="" xmi.id="ass15">
+                    <UML:Generalization.child>
+                        <UML:Class xmi.idref="cl0004"/>
+                    </UML:Generalization.child>
+                    <UML:Generalization.parent>
+                        <UML:Class xmi.idref="cl0003"/>
+                    </UML:Generalization.parent>
+                </UML:Generalization>
+                <UML:Association name="refers" xmi.id="ass16">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass16" name="2..4" type="cl0002" xmi.id="end17">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass16" name="1" type="cl0003" xmi.id="end18">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
                     </UML:Association.connection>

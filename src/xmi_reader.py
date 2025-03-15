@@ -1,7 +1,33 @@
 import xml.etree.ElementTree as ET
 from src.models import UMLClass
 from src.models import AssociationClass
+import re
+from math import inf
 
+def match_regex(input : str, regex_dict : dict[str, str]):
+    for pattern, value in regex_dict.items():
+        if re.search(pattern, input):
+            return value
+    return "No match found"
+
+def lower_upper_bound(type : str, mult : str) -> tuple[int, int]:
+
+    if(type == "one"):
+        lower_bound = 1
+        upper_bound = 1
+    
+    if(type == "lone"):
+        lower_bound = 0
+        upper_bound = 1
+    
+    if(type == "set" or type == "lower_set"):
+        lower_bound = int(mult.split("..")[0])
+        upper_bound = inf
+    
+    if(type == "lower_upper_set"):
+        lower_bound, upper_bound = map(int, mult.split(".."))
+    
+    return lower_bound, upper_bound
 
 def read_xmi(xmi_file) -> dict[str, UMLClass]:
     tree = ET.parse(xmi_file)
@@ -47,9 +73,8 @@ def read_xmi(xmi_file) -> dict[str, UMLClass]:
         ).get("xmi.idref")
 
         if child_id in classes and parent_id in classes:
-            classes[child_id].set_inheritance(classes[parent_id].name)
-            classes[parent_id].add_child(classes[child_id].name)
-            print(f"Childs of {classes[parent_id].name}: {classes[parent_id].children}")
+            classes[child_id].set_inheritance(parent_id)
+            classes[parent_id].add_child(child_id)
 
     # Extract associations and store them as AssociationClass instances
     for assoc in root.findall(".//UML:Association", namespace):
@@ -57,6 +82,14 @@ def read_xmi(xmi_file) -> dict[str, UMLClass]:
         ends = assoc.findall(
             ".//UML:Association.connection/UML:AssociationEnd", namespace
         )
+        
+        multipicty = {
+            r"^1$" : "one",
+            r"^0..1$" : "lone",
+            r"^\d+..\d+$" : "lower_upper_set",
+            r"^\d+..*$" : "lower_set",
+            r"^*$" : "set"
+        }
 
         if len(ends) == 2:
             assoc_type = (
@@ -64,36 +97,33 @@ def read_xmi(xmi_file) -> dict[str, UMLClass]:
             )
             end1_type = ends[0].get("type", "Unknown")
             end2_type = ends[1].get("type", "Unknown")
-            end1_mult = ends[0].get("name", "*")  # Default to "*" if missing
-            end2_mult = ends[1].get("name", "*")  # Default to "*" if missing
 
             from_class = classes.get(end1_type, None)
             to_class = classes.get(end2_type, None)
 
-            # Identify composite (whole-part) association
-            left = None  # Whole (composite side)
-            right = None  # Part (contained object)
+            end1_mult = ends[0].get("name")  # Default to "*" if missing
+            end2_mult = ends[1].get("name")  # Default to "*" if missing
+            
+            if(end1_mult is None or end2_mult is None):
+                print(f"Please give numbers to all sides of associations")
+                exit(1)
+                        
+            from_lower_mult, from_upper_mult = lower_upper_bound(match_regex(end1_mult, multipicty), end1_mult)
+            
+            to_lower_mult, to_upper_mult = lower_upper_bound(match_regex(end2_mult, multipicty), end2_mult)
+                                                             
+            association = AssociationClass(
+                assoc_name,
+                assoc_type,
+                from_class.name,
+                from_lower_mult,
+                from_upper_mult,
+                to_class.name,
+                to_lower_mult,
+                to_upper_mult,
+            )
+            from_class.associations.append(association)
 
-            if assoc_type == "composite":
-                if ends[0].get("aggregation") == "composite":
-                    left = from_class.name  # Whole
-                    right = to_class.name  # Part
-                elif ends[1].get("aggregation") == "composite":
-                    left = to_class.name  # Whole
-                    right = from_class.name  # Part
-
-            if from_class and to_class:
-                association = AssociationClass(
-                    assoc_name,
-                    assoc_type,
-                    from_class.name,
-                    end1_mult,
-                    to_class.name,
-                    end2_mult,
-                    left,
-                    right,
-                )
-                from_class.associations.append(association)
-                print(f"Association: {association}")
-
+            print(association)
+            
     return classes

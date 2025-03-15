@@ -1,10 +1,11 @@
 from src import read_xmi, translater
 
 
-classes = read_xmi("./data/association.xmi")
+def main():
+    classes = read_xmi("/WORKSPACE/uml2alloy/data/association.xmi")
 
-# printer.print_classes(classes)
-# printer.print_ocl_constraints(constraints)
-# print_associations(classes)
+    translater(classes)
 
-translater(classes)
+
+if __name__ == "__main__":
+    main()

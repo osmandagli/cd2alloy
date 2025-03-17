@@ -1,8 +1,10 @@
-abstract sig Obj { get: FName -> {Obj + Val} }
+abstract sig Obj { get: FName -> {Obj + Val + EnumVal} }
 abstract sig FName {}
 abstract sig Val {}
+abstract sig EnumVal {}
+
 pred ObjAttrib[objs: set Obj, fName: one FName,
-fType: set {Obj + Val }] {
+fType: set {Obj + Val + EnumVal}] {
 objs.get[fName] in fType
 all o: objs| one o.get[fName] }
 

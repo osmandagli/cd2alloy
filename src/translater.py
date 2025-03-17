@@ -1,127 +1,191 @@
 from math import isinf
+import helpers
 
-def translater(classes):
-    # Rule U1
-    for umlClass in classes.values():
-        print(f"sig {umlClass.name} extends Obj {{}}")
 
-    # Rule U2
-    for umlClass in classes.values():
-        for attribute in umlClass.attributes:
-            print(f"one sig {attribute[0]} extends FName {{}}")
-        for association in umlClass.associations:
-            print(f"one sig {association.name} extends FName {{}}")
+def generate_alloy_translation(uml_classes):
+    """Translates UML class structures into Alloy code."""
 
-    # Rule U3
-    for umlClass in classes.values():
-        for attribute in umlClass.attributes:
-            print(f"one sig type_{attribute[1]} extends Val {{}}")
+    print("\n")
+    # Rule U1: Define Classes as Signatures
+    print(
+        "\n".join(
+            [
+                f"sig {uml_class.name} extends Obj {{}}"
+                for uml_class in uml_classes.values()
+                if uml_class.classType != "enum"
+            ]
+        )
+    )
 
-    # Rule F1
-    for umlClass in classes.values():
-        print(f"fun {umlClass.name}SubsCD: set Obj {{ {umlClass.name}", end="")
-        if umlClass.children:
-            for child in umlClass.children:
-                print(f" + {classes.get(child).name}", end="")
-        print(" }")
+    print("\n")
 
-    # Rule F4
-    for umlClass in classes.values():
-        for association in umlClass.associations:
-            if association.association_type == "composite":
-                print(
-                    f"fun {association.to_class}CompFieldsCD:Obj->Obj {{\n   rel[{association.from_class}SubsCD, {association.name}]\n}}"
+    # Rule U2 & Rule U3: Define Attributes & Associations
+    attribute_signatures = []
+    for uml_class in uml_classes.values():
+        if uml_class.classType == "class":
+            # Define Attributes as Signatures
+            attribute_signatures.extend(
+                [
+                    f"private one sig {attr[0]} extends FName {{}}"
+                    for attr in uml_class.attributes
+                ]
+            )
+            # Define Associations as Signatures
+            attribute_signatures.extend(
+                [
+                    f"private one sig {assoc.name} extends FName {{}}"
+                    for assoc in uml_class.associations
+                ]
+            )
+            # Define Data Types for Attributes
+            attribute_signatures.extend(
+                [
+                    f"private one sig type_{attr[1]} extends Val {{}}"
+                    for attr in uml_class.attributes
+                    if attr[1] not in helpers.all_class_names(uml_classes)
+                ]
+            )
+
+    print("\n".join(attribute_signatures))
+
+    print("\n")
+
+    # Rule U4: Define Enum Values
+    print(
+        "\n".join(
+            [
+                f"private one sig enum_{uml_class.name}_{enum_value[0]} extends EnumVal {{}}"
+                for uml_class in uml_classes.values()
+                if uml_class.classType == "enum"
+                for enum_value in uml_class.attributes
+            ]
+        )
+    )
+
+    print("\n")
+
+    # Rule F1: Define Class Subtypes
+    for uml_class in uml_classes.values():
+        if uml_class.classType == "enum":
+            continue
+        if uml_class.children:
+            print(
+                f"fun {uml_class.name}SubsCD: set Obj {{ {uml_class.name} + "
+                + " + ".join(
+                    [f" {uml_classes.get(child).name}" for child in uml_class.children]
                 )
+                + f" }}"
+            )
+        else:
+            print(f"fun {uml_class.name}SubsCD: set Obj {{ {uml_class.name} }}")
 
-    print("run {")
-    # Rule P1
-    for umlClass in classes.values():
-        for attribute in umlClass.attributes:
-            print(f"ObjAttrib[{umlClass.name}, {attribute[0]}, type_{attribute[1]}]")
-        if umlClass.inheritance:
-            parent_id = umlClass.inheritance
-            parent = classes.get(parent_id)
-            if parent:
-                for attribute in parent.attributes:
-                    print(
-                        f"ObjAttrib[{umlClass.name}, {attribute[0]}, type_{attribute[1]}]"
-                    )
-            else:
-                print(
-                    f"Warning: Parent class '{parent_id}' not found in classes dictionary."
-                )
-
-    # Rule P2
-    for umlClass in classes.values():
-        attributes_and_associations = []
-
-        # Add class attributes
-        for attribute in umlClass.attributes:
-            attributes_and_associations.append(attribute[0])
-
-        # Add class associations
-        for association in umlClass.associations:
-            attributes_and_associations.append(association.name)
-
-        # Add parent class attributes
-        if umlClass.inheritance:
-            parent_id = umlClass.inheritance
-            parent = classes.get(parent_id)
-            if parent:
-                for attribute in parent.attributes:
-                    attributes_and_associations.append(attribute[0])
-                for association in parent.associations:
-                    attributes_and_associations.append(association.name)
-            else:
-                print(
-                    f"Warning: Parent class '{parent_id}' not found in classes dictionary."
-                )
-
-        if attributes_and_associations:
-            # Join all attributes with '+'
-            attributes_and_associations_str = " + ".join(attributes_and_associations)
-
-            print(f"ObjFNames[{umlClass.name}, {attributes_and_associations_str}]")
-
-    # Rule P3 now no abstract class is used so passed
-
-    # Rule P4
-    print(f"Obj = ", end="")
-    class_names = []
-    for umlClass in classes.values():
-        class_names.append(umlClass.name)
-
-    print(" + ".join(class_names))
-
-    # Rule A1 now no bidirectional association is used so passed
-
-    # Rule A2
-
-    for umlClass in classes.values():
-        for association in umlClass.associations:
-            if association.association_type == "composite":
-                print(
-                    f"Composition[{association.to_class}CompFieldsCD, {association.to_class}SubsCD]"
-                )
-
-    # Rule A3 and A4 not implemented due to not having right to left association
-
-    # Rule A5
-
-    for umlClass in classes.values():
-        for association in umlClass.associations:
-            if(not isinf(association.to_upper_mult)):
-                print(f"ObjLUAttrib[{association.from_class}SubsCD, {association.name}, {association.to_class}SubsCD, {association.to_lower_mult}, {association.to_upper_mult}]")
-            else:
-                print(f"ObjLAttrib[{association.from_class}SubsCD, {association.name}, {association.to_class}SubsCD, {association.to_lower_mult}]")
+    print("\n")
     
-    # Rule A6
-         
-    for umlClass in classes.values():
-        for association in umlClass.associations:
-            if(not isinf(association.from_upper_mult)):
-                print(f"ObjLU[{association.to_class}SubsCD, {association.name}, {association.from_class}SubsCD, {association.from_lower_mult}, {association.from_upper_mult}]")
+    for uml_class in uml_classes.values():
+        if uml_class.classType == "enum":
+            enumAttrs = [f"enum_{uml_class.name}_{attr[0]}" for attr in uml_class.attributes]
+
+            print(f"fun {uml_class.name}EnumCD: set EnumVal {{\n\t{"+\n\t".join(enumAttrs)} \n}}")
+            
+    
+    print("\n")
+
+    # Rule F4: Define Composite Relationships
+    print(
+        "\n".join(
+            [
+                f"fun {association.to_class}CompFieldsCD:Obj->Obj {{\n   rel[{association.from_class}SubsCD, {association.name}]\n}}"
+                for uml_class in uml_classes.values()
+                for association in uml_class.associations
+                if association.association_type == "composite"
+            ]
+        )
+    )
+
+    print("pred cd {")
+
+    # Rule P1: Define Object Attributes
+    print(
+    "\n".join([
+        f"ObjAttrib[{uml_class.name}, {attribute[0]}, "
+        + (f"{attribute[1]}EnumCD" if attribute[1] in helpers.all_enum_classes(uml_classes) else f"type_{attribute[1]}")
+        + "]"
+        for uml_class in uml_classes.values()
+        if uml_class.classType == "class"
+        for attribute in helpers.get_inherited_attributes(uml_class, uml_classes)  # Use inherited attributes
+    ])
+    )
+
+
+    print("\n")
+
+    # Rule P2: Define Object Field Names (Attributes + Associations)
+    for uml_class in uml_classes.values():
+        attribute_and_association_names = [attr[0] for attr in uml_class.attributes] + [
+            assoc.name for assoc in uml_class.associations
+        ]
+
+        if uml_class.inheritance:
+            parent_class = uml_classes.get(uml_class.inheritance)
+            if parent_class:
+                attribute_and_association_names.extend(
+                    [attr[0] for attr in parent_class.attributes]
+                )
+                attribute_and_association_names.extend(
+                    [assoc.name for assoc in parent_class.associations]
+                )
             else:
-                print(f"ObjL[{association.to_class}SubsCD, {association.name}, {association.from_class}SubsCD, {association.from_lower_mult}]")
+                print(
+                    f"Warning: Parent class '{uml_class.inheritance}' not found in class dictionary."
+                )
+
+        if attribute_and_association_names:
+            print(
+                f"ObjFNames[{uml_class.name}, {' + '.join(attribute_and_association_names)}]"
+            )
+
+    print("\n")
+
+    # Rule P4: Define Object Set
+    print(f"Obj = {' + '.join([uml_class.name for uml_class in uml_classes.values()])}")
+
+    print("\n")
+
+    # Rule A2: Define Composite Relationships
+    print(
+        "\n".join(
+            [
+                f"Composition[{association.to_class}CompFieldsCD, {association.to_class}SubsCD]"
+                for uml_class in uml_classes.values()
+                for association in uml_class.associations
+                if association.association_type == "composite"
+            ]
+        )
+    )
+
+    print("\n")
+
+    # Rule A5 & A6: Define Multiplicity Constraints
+    multiplicity_constraints = [
+        (
+            f"ObjLUAttrib[{association.from_class}SubsCD, {association.name}, {association.to_class}SubsCD, {association.to_lower_mult}, {association.to_upper_mult}]"
+            if not isinf(association.to_upper_mult)
+            else f"ObjLAttrib[{association.from_class}SubsCD, {association.name}, {association.to_class}SubsCD, {association.to_lower_mult}]"
+        )
+        for uml_class in uml_classes.values()
+        for association in uml_class.associations
+    ]
+
+    multiplicity_constraints += [
+        (
+            f"ObjLU[{association.to_class}SubsCD, {association.name}, {association.from_class}SubsCD, {association.from_lower_mult}, {association.from_upper_mult}]"
+            if not isinf(association.from_upper_mult)
+            else f"ObjL[{association.to_class}SubsCD, {association.name}, {association.from_class}SubsCD, {association.from_lower_mult}]"
+        )
+        for uml_class in uml_classes.values()
+        for association in uml_class.associations
+    ]
+
+    print("\n".join(multiplicity_constraints))
 
     print("}")

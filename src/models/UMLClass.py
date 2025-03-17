@@ -13,12 +13,16 @@ class UMLClass:
             []
         )  # List of AssociationClass instances
         self.facts: List[str] = []  # List of sig facts
+        self.classType: str = None
 
     def add_attribute(self, name: str, attr_type: str):
         self.attributes.append((name, attr_type))
 
     def set_inheritance(self, parent_name: str):
         self.inheritance = parent_name
+        
+    def get_class_type(self):
+        return self.classType
         
     def add_child(self, child_name: str):
         self.children.append(child_name)
@@ -42,3 +46,6 @@ class UMLClass:
         print(f"Associations for class {self.name}:")
         for association in self.associations:
             print(f"  {association}")
+    
+    def __str__(self):
+        return f"UMLClass( {self.name} ) with type {self.classType} and attributes {self.attributes}"

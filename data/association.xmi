@@ -2,58 +2,59 @@
     <XMI.header>
         <XMI.documentation>
             <XMI.exporter>PlantUML</XMI.exporter>
-            <XMI.exporterVersion>1.2025.0</XMI.exporterVersion>
+            <XMI.exporterVersion>1.2025.2</XMI.exporterVersion>
         </XMI.documentation>
         <XMI.metamodel xmi.name="UML" xmi.version="1.4"/>
     </XMI.header>
     <XMI.content>
         <UML:Model name="PlantUML" xmi.id="model1">
             <UML:Namespace.ownedElement>
-                <UML:Class name="Employee" xmi.id="cl0002">
+                <UML:Class name="Employee" xmi.id="ent0002">
                     <UML:Classifier.feature>
                         <UML:Attribute name="kind: PositionKind" xmi.id="att9"/>
+                        <UML:Attribute name="id: Int" xmi.id="att10"/>
                     </UML:Classifier.feature>
                 </UML:Class>
-                <UML:Class name="Task" xmi.id="cl0003">
+                <UML:Class name="Task" xmi.id="ent0003">
                     <UML:Classifier.feature>
-                        <UML:Attribute name="startDate: Date" xmi.id="att10"/>
+                        <UML:Attribute name="startDate: Date" xmi.id="att11"/>
                     </UML:Classifier.feature>
                 </UML:Class>
-                <UML:Class name="Manager" xmi.id="cl0004">
+                <UML:Class name="Manager" xmi.id="ent0004">
                     <UML:Classifier.feature/>
                 </UML:Class>
-                <UML:Class name="PositionKind" xmi.id="cl0005">
+                <UML:Class name="PositionKind" xmi.id="ent0005">
                     <UML:Classifier.feature>
-                        <UML:Attribute name="MANAGER" xmi.id="att11"/>
-                        <UML:Attribute name="EMPLOYEE" xmi.id="att12"/>
+                        <UML:Attribute name="MANAGER" xmi.id="att12"/>
+                        <UML:Attribute name="EMPLOYEE" xmi.id="att13"/>
                     </UML:Classifier.feature>
                 </UML:Class>
-                <UML:Association name="managedBy" xmi.id="ass13">
+                <UML:Association name="managedBy" xmi.id="ass14">
                     <UML:Association.connection>
-                        <UML:AssociationEnd association="ass13" name="*" type="cl0002" xmi.id="end14">
+                        <UML:AssociationEnd association="ass14" name="*" type="ent0002" xmi.id="end15">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
-                        <UML:AssociationEnd association="ass13" name="0..1" type="cl0004" xmi.id="end15">
+                        <UML:AssociationEnd association="ass14" name="0..1" type="ent0004" xmi.id="end16">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
                     </UML:Association.connection>
                 </UML:Association>
-                <UML:Association name="tasks" xmi.id="ass16">
+                <UML:Association name="tasks" xmi.id="ass17">
                     <UML:Association.connection>
-                        <UML:AssociationEnd association="ass16" name="1" type="cl0002" xmi.id="end17">
+                        <UML:AssociationEnd association="ass17" name="1" type="ent0002" xmi.id="end18">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
-                        <UML:AssociationEnd association="ass16" name="*" type="cl0003" xmi.id="end18">
+                        <UML:AssociationEnd association="ass17" name="*" type="ent0003" xmi.id="end19">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
                     </UML:Association.connection>
                 </UML:Association>
-                <UML:Generalization name="" xmi.id="ass19">
+                <UML:Generalization name="" xmi.id="ass20">
                     <UML:Generalization.child>
-                        <UML:Class xmi.idref="cl0004"/>
+                        <UML:Class xmi.idref="ent0004"/>
                     </UML:Generalization.child>
                     <UML:Generalization.parent>
-                        <UML:Class xmi.idref="cl0002"/>
+                        <UML:Class xmi.idref="ent0002"/>
                     </UML:Generalization.parent>
                 </UML:Generalization>
             </UML:Namespace.ownedElement>

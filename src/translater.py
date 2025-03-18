@@ -139,7 +139,7 @@ def generate_alloy_translation(uml_classes):
                     f"Warning: Parent class '{uml_class.inheritance}' not found in class dictionary."
                 )
 
-        if attribute_and_association_names:
+        if attribute_and_association_names and uml_class.classType == "class":
             print(
                 f"ObjFNames[{uml_class.name}, {' + '.join(attribute_and_association_names)}]"
             )
@@ -147,7 +147,7 @@ def generate_alloy_translation(uml_classes):
     print("\n")
 
     # Rule P4: Define Object Set
-    print(f"Obj = {' + '.join([uml_class.name for uml_class in uml_classes.values()])}")
+    print(f"Obj = {' + '.join([uml_class.name for uml_class in uml_classes.values() if uml_class.classType == 'class'])}")
 
     print("\n")
 
@@ -189,3 +189,5 @@ def generate_alloy_translation(uml_classes):
     print("\n".join(multiplicity_constraints))
 
     print("}")
+    
+    print("run cd")

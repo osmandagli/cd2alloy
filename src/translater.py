@@ -1,13 +1,15 @@
 from math import isinf
 import helpers
+from src import write_to_file, copy_alloy_base_to_output
 
 
 def generate_alloy_translation(uml_classes):
     """Translates UML class structures into Alloy code."""
 
-    print("\n")
+    copy_alloy_base_to_output()
+
     # Rule U1: Define Classes as Signatures
-    print(
+    write_to_file(
         "\n".join(
             [
                 f"sig {uml_class.name} extends Obj {{}}"
@@ -16,8 +18,6 @@ def generate_alloy_translation(uml_classes):
             ]
         )
     )
-
-    print("\n")
 
     # Rule U2 & Rule U3: Define Attributes & Associations
     attribute_signatures = []
@@ -46,12 +46,10 @@ def generate_alloy_translation(uml_classes):
                 ]
             )
 
-    print("\n".join(attribute_signatures))
-
-    print("\n")
+    write_to_file("\n".join(attribute_signatures))
 
     # Rule U4: Define Enum Values
-    print(
+    write_to_file(
         "\n".join(
             [
                 f"private one sig enum_{uml_class.name}_{enum_value[0]} extends EnumVal {{}}"
@@ -62,14 +60,12 @@ def generate_alloy_translation(uml_classes):
         )
     )
 
-    print("\n")
-
     # Rule F1: Define Class Subtypes
     for uml_class in uml_classes.values():
         if uml_class.classType == "enum":
             continue
         if uml_class.children:
-            print(
+            write_to_file(
                 f"fun {uml_class.name}SubsCD: set Obj {{ {uml_class.name} + "
                 + " + ".join(
                     [f" {uml_classes.get(child).name}" for child in uml_class.children]
@@ -77,21 +73,24 @@ def generate_alloy_translation(uml_classes):
                 + f" }}"
             )
         else:
-            print(f"fun {uml_class.name}SubsCD: set Obj {{ {uml_class.name} }}")
+            write_to_file(f"fun {uml_class.name}SubsCD: set Obj {{ {uml_class.name} }}")
 
-    print("\n")
-    
+    write_to_file("\n")
+
     for uml_class in uml_classes.values():
         if uml_class.classType == "enum":
-            enumAttrs = [f"enum_{uml_class.name}_{attr[0]}" for attr in uml_class.attributes]
+            enumAttrs = [
+                f"enum_{uml_class.name}_{attr[0]}" for attr in uml_class.attributes
+            ]
 
-            print(f"fun {uml_class.name}EnumCD: set EnumVal {{\n\t{"+\n\t".join(enumAttrs)} \n}}")
-            
-    
-    print("\n")
+            write_to_file(
+                f"fun {uml_class.name}EnumCD: set EnumVal {{\n\t{"+\n\t".join(enumAttrs)} \n}}"
+            )
+
+    write_to_file("\n")
 
     # Rule F4: Define Composite Relationships
-    print(
+    write_to_file(
         "\n".join(
             [
                 f"fun {association.to_class}CompFieldsCD:Obj->Obj {{\n   rel[{association.from_class}SubsCD, {association.name}]\n}}"
@@ -102,22 +101,29 @@ def generate_alloy_translation(uml_classes):
         )
     )
 
-    print("pred cd {")
+    write_to_file("pred cd {")
 
     # Rule P1: Define Object Attributes
-    print(
-    "\n".join([
-        f"ObjAttrib[{uml_class.name}, {attribute[0]}, "
-        + (f"{attribute[1]}EnumCD" if attribute[1] in helpers.all_enum_classes(uml_classes) else f"type_{attribute[1]}")
-        + "]"
-        for uml_class in uml_classes.values()
-        if uml_class.classType == "class"
-        for attribute in helpers.get_inherited_attributes(uml_class, uml_classes)  # Use inherited attributes
-    ])
+    write_to_file(
+        "\n".join(
+            [
+                f"ObjAttrib[{uml_class.name}, {attribute[0]}, "
+                + (
+                    f"{attribute[1]}EnumCD"
+                    if attribute[1] in helpers.all_enum_classes(uml_classes)
+                    else f"type_{attribute[1]}"
+                )
+                + "]"
+                for uml_class in uml_classes.values()
+                if uml_class.classType == "class"
+                for attribute in helpers.get_inherited_attributes(
+                    uml_class, uml_classes
+                )  # Use inherited attributes
+            ]
+        )
     )
 
-
-    print("\n")
+    write_to_file("\n")
 
     # Rule P2: Define Object Field Names (Attributes + Associations)
     for uml_class in uml_classes.values():
@@ -135,24 +141,26 @@ def generate_alloy_translation(uml_classes):
                     [assoc.name for assoc in parent_class.associations]
                 )
             else:
-                print(
+                write_to_file(
                     f"Warning: Parent class '{uml_class.inheritance}' not found in class dictionary."
                 )
 
         if attribute_and_association_names and uml_class.classType == "class":
-            print(
+            write_to_file(
                 f"ObjFNames[{uml_class.name}, {' + '.join(attribute_and_association_names)}]"
             )
 
-    print("\n")
+    write_to_file("\n")
 
     # Rule P4: Define Object Set
-    print(f"Obj = {' + '.join([uml_class.name for uml_class in uml_classes.values() if uml_class.classType == 'class'])}")
+    write_to_file(
+        f"Obj = {' + '.join([uml_class.name for uml_class in uml_classes.values() if uml_class.classType == 'class'])}"
+    )
 
-    print("\n")
+    write_to_file("\n")
 
     # Rule A2: Define Composite Relationships
-    print(
+    write_to_file(
         "\n".join(
             [
                 f"Composition[{association.to_class}CompFieldsCD, {association.to_class}SubsCD]"
@@ -163,7 +171,7 @@ def generate_alloy_translation(uml_classes):
         )
     )
 
-    print("\n")
+    write_to_file("\n")
 
     # Rule A5 & A6: Define Multiplicity Constraints
     multiplicity_constraints = [
@@ -186,8 +194,8 @@ def generate_alloy_translation(uml_classes):
         for association in uml_class.associations
     ]
 
-    print("\n".join(multiplicity_constraints))
+    write_to_file("\n".join(multiplicity_constraints))
 
-    print("}")
-    
-    print("run cd")
+    write_to_file("}")
+
+    write_to_file("run cd")

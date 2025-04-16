@@ -1,52 +1,101 @@
 
-abstract sig Obj { get: FName -> {Obj + Val } }
+/*
+Obj represents classes
+Get return the corresponding value
+*/
+abstract sig Obj { get: FName -> {Obj + Val} }
+// FName represents associations
 abstract sig FName {}
+// Val represents unknown types
 abstract sig Val {}
 
-
-pred ObjAttrib[objs: set Obj, fName: one FName,
-fType: set {Obj + Val }] {
+/*
+This predicates ensures that if you have a field for a class’s attribute, ObjAttrib guarantees that every object retrieves exactly one value and that the value is of the correct type.
+*/
+pred ObjAttrib[objs: set Obj, fName: one FName, fType: set {Obj + Val}] {
 objs.get[fName] in fType
-all o: objs| one o.get[fName] }
+all o: objs| one o.get[fName]
+}
+
+/*
+This predicate ensures that no fields outside the specified set.
+*/
 
 pred ObjFNames[objs: set Obj, fNames:set FName] {
-no objs.get[FName - fNames] }
+no objs.get[FName - fNames]
+}
 
-pred BidiAssoc[left: set Obj, lFName:one FName,
-right: set Obj, rFName:one FName] {
+/*
+This predicate models a bidirectional association between two sets of objects.
+*/
+
+pred BidiAssoc[left: set Obj, lFName:one FName, right: set Obj, rFName:one FName] {
 all l: left | all r: l.get[lFName] | l in r.get[rFName]
-all r: right | all l: r.get[rFName] | r in l.get[lFName] }
+all r: right | all l: r.get[rFName] | r in l.get[lFName]
+}
+
+/*
+For every part object (member of right), there is at most one whole object that points to it via the compos relation.
+*/
 
 pred Composition[compos: Obj->Obj, right: set Obj] {
-all r: right | lone compos.r }
+all r: right | lone compos.r
+}
+
+/*
+It returns the set of all ordered pairs (o1, o2) such that:
+
+o1 is in the set wholes,
+
+o1 has a field named fn (via the get relation), and
+
+o2 is the value associated with fn for o1.
+
+This predicate ensures that o2 exists with o1->fn->o2. Used for composition
+for ensuring o2 cannot exists without o1.
+*/
 
 fun rel[wholes: set Obj, fn: FName] : Obj->Obj {
-{o1:Obj,o2:Obj|o1->fn->o2 in wholes <: get} }
+{o1:Obj,o2:Obj|o1->fn->o2 in wholes <: get}
+}
 
+/*
+Ending with Attrib makes association its attribute
+Without Attrib just makes a constraint for the opposition attribute.
+*/
 
 pred ObjUAttrib[objs: set Obj, fName:one FName, fType:set Obj, up: Int] {
 objs.get[fName] in fType
-all o: objs| (#o.get[fName] =< up) }
+all o: objs| (#o.get[fName] =< up)
+}
 
 pred ObjLAttrib[objs: set Obj, fName: one FName, fType: set Obj, low: Int] {
 objs.get[fName] in fType
-all o: objs | (#o.get[fName] >= low) }
+all o: objs | (#o.get[fName] >= low)
+}
 
-pred ObjLUAttrib[objs:set Obj, fName:one FName, fType:set Obj,
-low: Int, up: Int] {
+pred ObjLUAttrib[objs:set Obj, fName:one FName, fType:set Obj,low: Int, up: Int] {
 ObjLAttrib[objs, fName, fType, low]
-ObjUAttrib[objs, fName, fType, up] }
+ObjUAttrib[objs, fName, fType, up]
+}
 
 pred ObjL[objs: set Obj, fName:one FName, fType: set Obj, low: Int] {
-all r: objs | # { l: fType | r in l.get[fName]} >= low }
+all r: objs | # { l: fType | r in l.get[fName]} >= low
+}
 
 pred ObjU[objs: set Obj, fName:one FName, fType: set Obj, up: Int] {
-all r: objs | # { l: fType | r in l.get[fName]} =< up }
+all r: objs | # { l: fType | r in l.get[fName]} =< up
+}
 
-pred ObjLU[objs: set Obj, fName:one FName, fType: set Obj,
-low: Int, up: Int] {
+pred ObjLU[objs: set Obj, fName:one FName, fType: set Obj,low: Int, up: Int] {
 ObjL[objs, fName, fType, low]
-ObjU[objs, fName, fType, up] }
+ObjU[objs, fName, fType, up]
+}
+
+// Funtion to get the inverse
+fun getInv[target: Obj, field: FName]: set Obj {
+{ o: Obj | target in o.get[field] }
+}
 sig Professor extends Obj {}
 sig Student extends Obj {}
 sig User extends Obj {}
@@ -70,14 +119,16 @@ fun GroupSubsCD: set Obj { Group }
 fun ChatSubsCD: set Obj { Chat }
 
 fact messageConstraint {
-  all m : Message, c : Chat  | 
+  all m : Message, c : Chat | 
     m in c.get[Posted] implies 
       m.get[Authorship] in 
-        { u: User | some g: Group | g in c.get[Releated] and u in g.get[Membership] }
+        getInv[c, Releated].get[Membership]
 }
 
 fact {
 
+#User = 2
+#Message = 2
 #Group = 2
 no Professor.get[FName]
 no Student.get[FName]
@@ -91,8 +142,8 @@ ObjAttrib[Group, administrator, StudentSubsCD]
 
 
 ObjFNames[Message, tags + text + Authorship]
-ObjFNames[Group, administrator + Membership]
-ObjFNames[Chat, Releated + Posted]
+ObjFNames[Group, administrator + Membership + Releated]
+ObjFNames[Chat, Posted]
 
 
 Obj = Professor + Student + User + Message + Group + Chat
@@ -103,11 +154,11 @@ Obj = Professor + Student + User + Message + Group + Chat
 
 ObjLUAttrib[MessageSubsCD, Authorship, UserSubsCD, 1, 1]
 ObjLAttrib[GroupSubsCD, Membership, UserSubsCD, 1]
-ObjLUAttrib[ChatSubsCD, Releated, GroupSubsCD, 1, 1]
+ObjLUAttrib[GroupSubsCD, Releated, ChatSubsCD, 1, 1]
 ObjLAttrib[ChatSubsCD, Posted, MessageSubsCD, 1]
 ObjL[UserSubsCD, Authorship, MessageSubsCD, 0]
 ObjL[UserSubsCD, Membership, GroupSubsCD, 1]
-ObjLU[GroupSubsCD, Releated, ChatSubsCD, 1, 1]
+ObjLU[ChatSubsCD, Releated, GroupSubsCD, 1, 1]
 ObjL[MessageSubsCD, Posted, ChatSubsCD, 1]
 }
 run cd for 10

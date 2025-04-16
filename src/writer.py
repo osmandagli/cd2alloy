@@ -5,7 +5,6 @@ def write_to_file(content, filename="output.als", mode="a"):
     with open(filename, mode, encoding="utf-8") as file:
         file.write(content + "\n")  # Ensure newline after each write
 
-import helpers
 def copy_alloy_base_to_output(
     base_filename="/WORKSPACE/uml2alloy/data/alloy_bases/full_base.als",
     output_filename="output.als"
@@ -27,8 +26,6 @@ def write_alloy_base(classes) -> None:
     
     isEnumNotExists = not helpers.isConsistEnum(classes=classes)
     isCustomValNotExists = not helpers.isCustomTypeExists(classes=classes)
-    
-    print(f"Enum : {isEnumNotExists} and Val : {isCustomValNotExists}")
     
     if isEnumNotExists and isCustomValNotExists:
         copy_alloy_base_to_output(base_filename="/WORKSPACE/uml2alloy/data/alloy_bases/no_val_enum_base.als")

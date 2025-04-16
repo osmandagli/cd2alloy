@@ -61,8 +61,10 @@ def isCustomTypeExists(classes) -> bool:
     allClasses = all_class_names(classes=classes)
     
     for umlClass in classes.values():
+        if umlClass.classType == "enum":
+            continue
         for attribute in umlClass.attributes:
-            if attribute not in allClasses:
+            if attribute[1] not in allClasses:
                 return True
     
     return False

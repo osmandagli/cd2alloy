@@ -70,10 +70,10 @@
                 </UML:Association>
                 <UML:Association name="Releated" xmi.id="ass25">
                     <UML:Association.connection>
-                        <UML:AssociationEnd association="ass25" name="1" type="ent0007" xmi.id="end26">
+                        <UML:AssociationEnd association="ass25" name="1" type="ent0006" xmi.id="end26">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
-                        <UML:AssociationEnd association="ass25" name="1" type="ent0006" xmi.id="end27">
+                        <UML:AssociationEnd association="ass25" name="1" type="ent0007" xmi.id="end27">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
                     </UML:Association.connection>

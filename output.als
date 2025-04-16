@@ -1,30 +1,68 @@
 
-abstract sig Obj { get: FName -> {Obj + Val + EnumVal} }
+/*
+Obj represents classes
+Get return the corresponding value
+*/
+abstract sig Obj { get: FName -> {Obj + Val} }
+// FName represents associations
 abstract sig FName {}
+// Val represents unknown types
 abstract sig Val {}
-abstract sig EnumVal {}
 
-pred ObjAttrib[objs: set Obj, fName: one FName, fType: set {Obj + Val + EnumVal}] {
+/*
+This predicates ensures that if you have a field for a class’s attribute, ObjAttrib guarantees that every object retrieves exactly one value and that the value is of the correct type.
+*/
+pred ObjAttrib[objs: set Obj, fName: one FName, fType: set {Obj + Val}] {
 objs.get[fName] in fType
 all o: objs| one o.get[fName]
 }
 
+/*
+This predicate ensures that no fields outside the specified set.
+*/
+
 pred ObjFNames[objs: set Obj, fNames:set FName] {
 no objs.get[FName - fNames]
 }
+
+/*
+This predicate models a bidirectional association between two sets of objects.
+*/
 
 pred BidiAssoc[left: set Obj, lFName:one FName, right: set Obj, rFName:one FName] {
 all l: left | all r: l.get[lFName] | l in r.get[rFName]
 all r: right | all l: r.get[rFName] | r in l.get[lFName]
 }
 
+/*
+For every part object (member of right), there is at most one whole object that points to it via the compos relation.
+*/
+
 pred Composition[compos: Obj->Obj, right: set Obj] {
 all r: right | lone compos.r
 }
 
+/*
+It returns the set of all ordered pairs (o1, o2) such that:
+
+o1 is in the set wholes,
+
+o1 has a field named fn (via the get relation), and
+
+o2 is the value associated with fn for o1.
+
+This predicate ensures that o2 exists with o1->fn->o2. Used for composition
+for ensuring o2 cannot exists without o1.
+*/
+
 fun rel[wholes: set Obj, fn: FName] : Obj->Obj {
 {o1:Obj,o2:Obj|o1->fn->o2 in wholes <: get}
 }
+
+/*
+Ending with Attrib makes association its attribute
+Without Attrib just makes a constraint for the opposition attribute.
+*/
 
 pred ObjUAttrib[objs: set Obj, fName:one FName, fType:set Obj, up: Int] {
 objs.get[fName] in fType
@@ -53,95 +91,68 @@ pred ObjLU[objs: set Obj, fName:one FName, fType: set Obj,low: Int, up: Int] {
 ObjL[objs, fName, fType, low]
 ObjU[objs, fName, fType, up]
 }
-sig CandidateInfo extends Obj {}
-sig Area extends Obj {}
-sig Election extends Obj {}
-sig Race extends Obj {}
-sig Candidate extends Obj {}
-sig Party extends Obj {}
-sig BlankPreference extends Obj {}
-sig FilledPreference extends Obj {}
-sig Preference extends Obj {}
-sig Ballot extends Obj {}
-sig VoteTracker extends Obj {}
-private one sig hasRaces extends FName {}
-private one sig hasCandidate extends FName {}
-private one sig info extends FName {}
-private one sig affiliated extends FName {}
-private one sig votes extends FName {}
-private one sig validity extends FName {}
-private one sig post extends FName {}
-private one sig inBallot extends FName {}
-private one sig e extends FName {}
-private one sig area extends FName {}
-private one sig stores extends FName {}
-private one sig enum_Validity_valid extends EnumVal {}
-private one sig enum_Validity_invalid extends EnumVal {}
-fun CandidateInfoSubsCD: set Obj { CandidateInfo }
-fun AreaSubsCD: set Obj { Area }
-fun ElectionSubsCD: set Obj { Election }
-fun RaceSubsCD: set Obj { Race }
-fun CandidateSubsCD: set Obj { Candidate }
-fun PartySubsCD: set Obj { Party }
-fun BlankPreferenceSubsCD: set Obj { BlankPreference }
-fun FilledPreferenceSubsCD: set Obj { FilledPreference }
-fun PreferenceSubsCD: set Obj { Preference +  BlankPreference +  FilledPreference }
-fun BallotSubsCD: set Obj { Ballot }
-fun VoteTrackerSubsCD: set Obj { VoteTracker }
 
-
-fun ValidityEnumCD: set EnumVal {
-	enum_Validity_valid+
-	enum_Validity_invalid 
+// Funtion to get the inverse
+fun getInv[target: Obj, field: FName]: set Obj {
+{ o: Obj | target in o.get[field] }
 }
+sig Professor extends Obj {}
+sig Student extends Obj {}
+sig User extends Obj {}
+sig Message extends Obj {}
+sig Group extends Obj {}
+sig Chat extends Obj {}
+private one sig tags extends FName {}
+private one sig text extends FName {}
+private one sig Authorship extends FName {}
+private one sig type_String extends Val {}
+private one sig administrator extends FName {}
+private one sig Membership extends FName {}
+private one sig Releated extends FName {}
+private one sig Posted extends FName {}
+
+fun ProfessorSubsCD: set Obj { Professor }
+fun StudentSubsCD: set Obj { Student }
+fun UserSubsCD: set Obj { User +  Professor +  Student }
+fun MessageSubsCD: set Obj { Message }
+fun GroupSubsCD: set Obj { Group }
+fun ChatSubsCD: set Obj { Chat }
 
 
-fun RaceCompFieldsCD:Obj->Obj {
-   rel[ElectionSubsCD, hasRaces]
-}
+
+
+
 fact {
 
-no CandidateInfo.get[FName]
-no Area.get[FName]
-no Party.get[FName]
+no Professor.get[FName]
+no Student.get[FName]
+no User.get[FName]
 }
 
 pred cd {
-ObjAttrib[Candidate, info, CandidateInfoSubsCD]
-ObjAttrib[BlankPreference, post, RaceSubsCD]
-ObjAttrib[FilledPreference, votes, CandidateSubsCD]
-ObjAttrib[FilledPreference, validity, ValidityEnumCD]
-ObjAttrib[FilledPreference, post, RaceSubsCD]
-ObjAttrib[Preference, post, RaceSubsCD]
-ObjAttrib[Ballot, e, ElectionSubsCD]
-ObjAttrib[VoteTracker, area, AreaSubsCD]
+ObjAttrib[Message, text, type_String]
+ObjAttrib[Message, tags, UserSubsCD]
+ObjAttrib[Group, administrator, StudentSubsCD]
 
 
-ObjFNames[Election, hasRaces]
-ObjFNames[Race, hasCandidate]
-ObjFNames[Candidate, info + affiliated]
-ObjFNames[BlankPreference, post + inBallot]
-ObjFNames[FilledPreference, votes + validity + post + inBallot]
-ObjFNames[Preference, post + inBallot]
-ObjFNames[Ballot, e]
-ObjFNames[VoteTracker, area + stores]
+ObjFNames[Message, tags + text + Authorship]
+ObjFNames[Group, administrator + Membership + Releated]
+ObjFNames[Chat, Posted]
 
 
-Obj = CandidateInfo + Area + Election + Race + Candidate + Party + BlankPreference + FilledPreference + Preference + Ballot + VoteTracker
+Obj = Professor + Student + User + Message + Group + Chat
 
 
-Composition[RaceCompFieldsCD, RaceSubsCD]
 
 
-ObjLAttrib[ElectionSubsCD, hasRaces, RaceSubsCD, 1]
-ObjLAttrib[RaceSubsCD, hasCandidate, CandidateSubsCD, 1]
-ObjLUAttrib[CandidateSubsCD, affiliated, PartySubsCD, 1, 1]
-ObjLAttrib[PreferenceSubsCD, inBallot, BallotSubsCD, 1]
-ObjLAttrib[VoteTrackerSubsCD, stores, PreferenceSubsCD, 1]
-ObjLU[RaceSubsCD, hasRaces, ElectionSubsCD, 1, 1]
-ObjLU[CandidateSubsCD, hasCandidate, RaceSubsCD, 1, 1]
-ObjL[PartySubsCD, affiliated, CandidateSubsCD, 1]
-ObjL[BallotSubsCD, inBallot, PreferenceSubsCD, 1]
-ObjL[PreferenceSubsCD, stores, VoteTrackerSubsCD, 1]
+
+ObjLUAttrib[MessageSubsCD, Authorship, UserSubsCD, 1, 1]
+ObjLAttrib[GroupSubsCD, Membership, UserSubsCD, 1]
+ObjLUAttrib[GroupSubsCD, Releated, ChatSubsCD, 1, 1]
+ObjLAttrib[ChatSubsCD, Posted, MessageSubsCD, 1]
+ObjL[UserSubsCD, Authorship, MessageSubsCD, 0]
+ObjL[UserSubsCD, Membership, GroupSubsCD, 1]
+ObjLU[ChatSubsCD, Releated, GroupSubsCD, 1, 1]
+ObjL[MessageSubsCD, Posted, ChatSubsCD, 1]
 }
 run cd for 10

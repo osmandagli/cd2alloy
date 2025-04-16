@@ -92,3 +92,8 @@ pred ObjLU[objs: set Obj, fName:one FName, fType: set Obj,low: Int, up: Int] {
 	ObjL[objs, fName, fType, low]
 	ObjU[objs, fName, fType, up]
 }
+
+// Funtion to get the inverse
+fun getInv[target: Obj, field: FName]: set Obj {
+  { o: Obj | target in o.get[field] }
+}

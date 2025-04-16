@@ -1,12 +1,14 @@
+import helpers
+
 def write_to_file(content, filename="output.als", mode="a"):
     """Writes the given content to a file. Defaults to appending."""
     with open(filename, mode, encoding="utf-8") as file:
         file.write(content + "\n")  # Ensure newline after each write
 
-
+import helpers
 def copy_alloy_base_to_output(
-    base_filename="/WORKSPACE/uml2alloy/data/alloy_base.als",
-    output_filename="output.als",
+    base_filename="/WORKSPACE/uml2alloy/data/alloy_bases/full_base.als",
+    output_filename="output.als"
 ):
     """Reads alloy_base.als and writes it to output.als using write_to_file()."""
     try:
@@ -20,3 +22,22 @@ def copy_alloy_base_to_output(
 
     except Exception as e:
         print(f"Unexpected error: {e}")
+
+def write_alloy_base(classes) -> None:
+    
+    isEnumNotExists = not helpers.isConsistEnum(classes=classes)
+    isCustomValNotExists = not helpers.isCustomTypeExists(classes=classes)
+    
+    print(f"Enum : {isEnumNotExists} and Val : {isCustomValNotExists}")
+    
+    if isEnumNotExists and isCustomValNotExists:
+        copy_alloy_base_to_output(base_filename="/WORKSPACE/uml2alloy/data/alloy_bases/no_val_enum_base.als")
+    
+    elif isEnumNotExists:
+        copy_alloy_base_to_output(base_filename="/WORKSPACE/uml2alloy/data/alloy_bases/no_enum_base.als")
+        
+    elif isCustomValNotExists:
+        copy_alloy_base_to_output(base_filename="/WORKSPACE/uml2alloy/data/alloy_bases/no_val_base.als")
+    
+    else:
+        copy_alloy_base_to_output()

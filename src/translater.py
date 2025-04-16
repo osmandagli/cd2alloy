@@ -1,12 +1,12 @@
 from math import isinf
 import helpers
-from src import write_to_file, copy_alloy_base_to_output
+from src import write_to_file, write_alloy_base
 
 
 def generate_alloy_translation(uml_classes):
     """Translates UML class structures into Alloy code."""
-
-    copy_alloy_base_to_output()
+    
+    write_alloy_base(classes=uml_classes)
 
     # Rule U1: Define Classes as Signatures
     write_to_file(
@@ -100,7 +100,14 @@ def generate_alloy_translation(uml_classes):
             ]
         )
     )
-
+    
+    # Define the facts of empty classes
+    
+    write_to_file("fact {\n")
+    for class_name in helpers.all_empty_classes(uml_classes):
+        write_to_file(f"no {class_name}.get[FName]")
+    write_to_file("}\n")
+    
     write_to_file("pred cd {")
 
     # Rule P1: Define Object Attributes
@@ -111,6 +118,8 @@ def generate_alloy_translation(uml_classes):
                 + (
                     f"{attribute[1]}EnumCD"
                     if attribute[1] in helpers.all_enum_classes(uml_classes)
+                    else f"{attribute[1]}SubsCD"
+                    if attribute[1] in helpers.all_classes_except_enums(uml_classes)
                     else f"type_{attribute[1]}"
                 )
                 + "]"
@@ -198,4 +207,4 @@ def generate_alloy_translation(uml_classes):
 
     write_to_file("}")
 
-    write_to_file("run cd")
+    write_to_file("run cd for 10")

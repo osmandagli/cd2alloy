@@ -155,15 +155,9 @@ no Party.get[FName]
 fact noBallotsForWrongRaces {
   all b: Ballot |
     // Get preferences linked to ballot via inverse of inBallot
-    let prefs = getInv[b, inBallot] |
-    let races = b.get[e].get[hasRaces] |
-    // Every preference's post must be in the races of the election
-    all p: prefs | p.get[post] in races
-
-    and
-
-    // Every race has exactly one preference for this ballot
-    all r: races | one p: prefs | p.get[post] = r
+    getInv[b, inBallot].get[post] in b.get[e].get[hasRaces]
+	and
+	all r: b.get[e].get[hasRaces] | one p : getInv[b, inBallot] | p.get[post] = r
 }
 
 

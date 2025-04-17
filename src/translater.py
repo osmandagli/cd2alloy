@@ -104,9 +104,17 @@ def generate_alloy_translation(uml_classes):
     # Define the facts of empty classes
     
     write_to_file("fact {\n")
+    
     for class_name in helpers.all_empty_classes(uml_classes):
-        write_to_file(f"no {class_name}.get[FName]")
+        write_to_file(f"\tno {class_name}.get[FName]")
+        
+    for uml_class in uml_classes.values():
+        if(uml_class.classType == "abstract"):
+            write_to_file(f"\tno {uml_class.name}\n")
+            
     write_to_file("}\n")
+    
+    
     
     write_to_file("pred cd {")
 

@@ -3,16 +3,18 @@
 Obj represents classes
 Get return the corresponding value
 */
-abstract sig Obj { get: FName -> {Obj + Val} }
+abstract sig Obj { get: FName -> {Obj + Val + EnumVal} }
 // FName represents associations
 abstract sig FName {}
 // Val represents unknown types
 abstract sig Val {}
+// EnumVal represents enum values
+abstract sig EnumVal {}
 
 /*
 This predicates ensures that if you have a field for a class’s attribute, ObjAttrib guarantees that every object retrieves exactly one value and that the value is of the correct type.
 */
-pred ObjAttrib[objs: set Obj, fName: one FName, fType: set {Obj + Val}] {
+pred ObjAttrib[objs: set Obj, fName: one FName, fType: set {Obj + Val + EnumVal}] {
 objs.get[fName] in fType
 all o: objs| one o.get[fName]
 }
@@ -96,63 +98,66 @@ ObjU[objs, fName, fType, up]
 fun getInv[target: Obj, field: FName]: set Obj {
 { o: Obj | target in o.get[field] }
 }
-sig Professor extends Obj {}
-sig Student extends Obj {}
-sig User extends Obj {}
-sig Message extends Obj {}
-sig Group extends Obj {}
-sig Chat extends Obj {}
-private one sig tags extends FName {}
-private one sig text extends FName {}
-private one sig Authorship extends FName {}
-private one sig type_String extends Val {}
-private one sig administrator extends FName {}
-private one sig Membership extends FName {}
-private one sig Releated extends FName {}
-private one sig Posted extends FName {}
-
-fun ProfessorSubsCD: set Obj { Professor }
-fun StudentSubsCD: set Obj { Student }
-fun UserSubsCD: set Obj { User +  Professor +  Student }
-fun MessageSubsCD: set Obj { Message }
-fun GroupSubsCD: set Obj { Group }
-fun ChatSubsCD: set Obj { Chat }
+sig Person extends Obj {}
+sig Employee extends Obj {}
+sig Task extends Obj {}
+sig Manager extends Obj {}
+sig test extends Obj {}
+private one sig managedBy extends FName {}
+private one sig tasks extends FName {}
+private one sig manager extends FName {}
+private one sig startDate extends FName {}
+private one sig type_Date extends Val {}
+private one sig enum_PositionKind_MANAGER extends EnumVal {}
+private one sig enum_PositionKind_EMPLOYEE extends EnumVal {}
+fun PersonSubsCD: set Obj { Person +  Manager +  Employee }
+fun EmployeeSubsCD: set Obj { Employee }
+fun TaskSubsCD: set Obj { Task }
+fun ManagerSubsCD: set Obj { Manager }
+fun testSubsCD: set Obj { test }
 
 
-
-
-
-fact {
-
-no Professor.get[FName]
-no Student.get[FName]
-no User.get[FName]
+fun PositionKindEnumCD: set EnumVal {
+	enum_PositionKind_MANAGER+
+	enum_PositionKind_EMPLOYEE 
 }
 
+
+fun TaskCompFieldsCD:Obj->Obj {
+   rel[EmployeeSubsCD, tasks]
+}
+fact {
+
+	no Employee.get[FName]
+	no Manager.get[FName]
+	no test.get[FName]
+}
+
+	no Person
+
 pred cd {
-ObjAttrib[Message, text, type_String]
-ObjAttrib[Message, tags, UserSubsCD]
-ObjAttrib[Group, administrator, StudentSubsCD]
+ObjAttrib[Employee, id, type_Int]
+ObjAttrib[Employee, kind, PositionKindEnumCD]
+ObjAttrib[Task, startDate, type_Date]
+ObjAttrib[Task, manager, ManagerSubsCD]
+ObjAttrib[Manager, id, type_Int]
+ObjAttrib[Manager, kind, PositionKindEnumCD]
 
 
-ObjFNames[Message, tags + text + Authorship]
-ObjFNames[Group, administrator + Membership + Releated]
-ObjFNames[Chat, Posted]
+ObjFNames[Employee, managedBy + tasks + kind + id]
+ObjFNames[Task, manager + startDate]
+ObjFNames[Manager, kind + id]
 
 
-Obj = Professor + Student + User + Message + Group + Chat
+Obj = Employee + Task + Manager + test
 
 
+Composition[TaskCompFieldsCD, TaskSubsCD]
 
 
-
-ObjLUAttrib[MessageSubsCD, Authorship, UserSubsCD, 1, 1]
-ObjLAttrib[GroupSubsCD, Membership, UserSubsCD, 1]
-ObjLUAttrib[GroupSubsCD, Releated, ChatSubsCD, 1, 1]
-ObjLAttrib[ChatSubsCD, Posted, MessageSubsCD, 1]
-ObjL[UserSubsCD, Authorship, MessageSubsCD, 0]
-ObjL[UserSubsCD, Membership, GroupSubsCD, 1]
-ObjLU[ChatSubsCD, Releated, GroupSubsCD, 1, 1]
-ObjL[MessageSubsCD, Posted, ChatSubsCD, 1]
+ObjLUAttrib[EmployeeSubsCD, managedBy, ManagerSubsCD, 0, 1]
+ObjLAttrib[EmployeeSubsCD, tasks, TaskSubsCD, 0]
+ObjL[ManagerSubsCD, managedBy, EmployeeSubsCD, 0]
+ObjLU[TaskSubsCD, tasks, EmployeeSubsCD, 1, 1]
 }
 run cd for 10

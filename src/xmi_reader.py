@@ -45,10 +45,17 @@ def read_xmi(xmi_file) -> dict[str, UMLClass]:
     for uml_class in root.findall(".//UML:Class", namespace):
         class_id = uml_class.get("xmi.id")
         class_name = uml_class.get("name", None)
+        
         if class_name is None:
             continue
-
+        
         classes[class_id] = UMLClass(class_id, class_name)
+        
+        if uml_class.get("isAbstract", None) == "true":
+            
+            classes[class_id].classType = "abstract"
+
+        
 
         if uml_class.findall(
             ".//UML:Classifier.feature/UML:Attribute", namespace
@@ -141,5 +148,5 @@ def read_xmi(xmi_file) -> dict[str, UMLClass]:
                 to_upper_mult,
             )
             from_class.associations.append(association)
-            
+        
     return classes

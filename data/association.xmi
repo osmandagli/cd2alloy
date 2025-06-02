@@ -9,69 +9,85 @@
     <XMI.content>
         <UML:Model name="PlantUML" xmi.id="model1">
             <UML:Namespace.ownedElement>
-                <UML:Class isAbstract="true" name="Person" xmi.id="ent0002">
-                    <UML:Classifier.feature>
-                        <UML:Attribute name="kind: PositionKind" xmi.id="att12"/>
-                        <UML:Attribute name="id: Int" xmi.id="att13"/>
-                    </UML:Classifier.feature>
-                </UML:Class>
-                <UML:Class name="Employee" xmi.id="ent0003">
+                <UML:Class name="Professor" xmi.id="ent0002">
                     <UML:Classifier.feature/>
                 </UML:Class>
-                <UML:Class name="Task" xmi.id="ent0004">
-                    <UML:Classifier.feature>
-                        <UML:Attribute name="manager : Manager" xmi.id="att14"/>
-                        <UML:Attribute name="startDate: Date" xmi.id="att15"/>
-                    </UML:Classifier.feature>
-                </UML:Class>
-                <UML:Class name="Manager" xmi.id="ent0005">
+                <UML:Class name="Student" xmi.id="ent0003">
                     <UML:Classifier.feature/>
                 </UML:Class>
-                <UML:Class name="PositionKind" xmi.id="ent0006">
-                    <UML:Classifier.feature>
-                        <UML:Attribute name="MANAGER" xmi.id="att16"/>
-                        <UML:Attribute name="EMPLOYEE" xmi.id="att17"/>
-                    </UML:Classifier.feature>
-                </UML:Class>
-                <UML:Class isInterface="true" name="test" xmi.id="ent0007">
+                <UML:Class isAbstract="true" name="User" xmi.id="ent0004">
                     <UML:Classifier.feature/>
                 </UML:Class>
-                <UML:Association name="managedBy" xmi.id="ass18">
-                    <UML:Association.connection>
-                        <UML:AssociationEnd association="ass18" name="*" type="ent0003" xmi.id="end19">
-                            <UML:AssociationEnd.participant/>
-                        </UML:AssociationEnd>
-                        <UML:AssociationEnd association="ass18" name="0..1" type="ent0005" xmi.id="end20">
-                            <UML:AssociationEnd.participant/>
-                        </UML:AssociationEnd>
-                    </UML:Association.connection>
-                </UML:Association>
-                <UML:Association name="tasks" xmi.id="ass21">
-                    <UML:Association.connection>
-                        <UML:AssociationEnd aggregation="composite" association="ass21" name="1" type="ent0003" xmi.id="end22">
-                            <UML:AssociationEnd.participant/>
-                        </UML:AssociationEnd>
-                        <UML:AssociationEnd association="ass21" name="*" type="ent0004" xmi.id="end23">
-                            <UML:AssociationEnd.participant/>
-                        </UML:AssociationEnd>
-                    </UML:Association.connection>
-                </UML:Association>
-                <UML:Generalization name="" xmi.id="ass24">
+                <UML:Class name="Message" xmi.id="ent0005">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="tags : User" xmi.id="att14"/>
+                        <UML:Attribute name="text : String" xmi.id="att15"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Class name="Group" xmi.id="ent0006">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="administrator : Student" xmi.id="att16"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Class name="Chat" xmi.id="ent0007">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Generalization name="" xmi.id="ass17">
                     <UML:Generalization.child>
-                        <UML:Class xmi.idref="ent0005"/>
+                        <UML:Class xmi.idref="ent0002"/>
                     </UML:Generalization.child>
                     <UML:Generalization.parent>
-                        <UML:Class xmi.idref="ent0002"/>
+                        <UML:Class xmi.idref="ent0004"/>
                     </UML:Generalization.parent>
                 </UML:Generalization>
-                <UML:Generalization name="" xmi.id="ass25">
+                <UML:Generalization name="" xmi.id="ass18">
                     <UML:Generalization.child>
                         <UML:Class xmi.idref="ent0003"/>
                     </UML:Generalization.child>
                     <UML:Generalization.parent>
-                        <UML:Class xmi.idref="ent0002"/>
+                        <UML:Class xmi.idref="ent0004"/>
                     </UML:Generalization.parent>
                 </UML:Generalization>
+                <UML:Association name="Authorship" xmi.id="ass19">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass19" name="0..*" type="ent0005" xmi.id="end20">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass19" name="1" type="ent0004" xmi.id="end21">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Association name="Membership" xmi.id="ass22">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass22" name="1..*" type="ent0006" xmi.id="end23">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass22" name="1..*" type="ent0004" xmi.id="end24">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Association name="Releated" xmi.id="ass25">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass25" name="1" type="ent0006" xmi.id="end26">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass25" name="1" type="ent0007" xmi.id="end27">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Association name="Posted" xmi.id="ass28">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass28" name="1..*" type="ent0007" xmi.id="end29">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass28" name="1..*" type="ent0005" xmi.id="end30">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
             </UML:Namespace.ownedElement>
         </UML:Model>
     </XMI.content>

@@ -52,7 +52,7 @@ def read_xmi(xmi_file) -> dict[str, UMLClass]:
         classes[class_id] = UMLClass(class_id, class_name)
         
         if uml_class.get("isAbstract", None) == "true":
-            
+            print("inside")
             classes[class_id].classType = "abstract"
 
         
@@ -81,7 +81,8 @@ def read_xmi(xmi_file) -> dict[str, UMLClass]:
 
                 classes[class_id].add_attribute(attr_name, attr_type)
         else:
-            classes[class_id].classType = "class"
+            if classes[class_id].get_class_type() is None:
+                classes[class_id].classType = "class"
         
     # Extract inheritance relationships
     for generalization in root.findall(".//UML:Generalization", namespace):

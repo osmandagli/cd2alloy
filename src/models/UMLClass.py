@@ -1,4 +1,4 @@
-from src.models import AssociationClass
+from models import AssociationClass
 from typing import List
 
 

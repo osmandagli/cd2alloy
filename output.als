@@ -3,16 +3,18 @@
 Obj represents classes
 Get return the corresponding value
 */
-abstract sig Obj { get: FName -> {Obj + Val} }
+abstract sig Obj { get: FName -> {Obj + Val + EnumVal} }
 // FName represents associations
 abstract sig FName {}
 // Val represents unknown types
 abstract sig Val {}
+// EnumVal represents enum values
+abstract sig EnumVal {}
 
 /*
 This predicates ensures that if you have a field for a class’s attribute, ObjAttrib guarantees that every object retrieves exactly one value and that the value is of the correct type.
 */
-pred ObjAttrib[objs: set Obj, fName: one FName, fType: set {Obj + Val}] {
+pred ObjAttrib[objs: set Obj, fName: one FName, fType: set {Obj + Val + EnumVal}] {
 objs.get[fName] in fType
 all o: objs| one o.get[fName]
 }
@@ -96,65 +98,92 @@ ObjU[objs, fName, fType, up]
 fun getInv[target: Obj, field: FName]: set Obj {
 { o: Obj | target in o.get[field] }
 }
-sig Professor extends Obj {}
-sig Student extends Obj {}
-sig User extends Obj {}
-sig Message extends Obj {}
-sig Group extends Obj {}
-sig Chat extends Obj {}
-private one sig tags extends FName {}
-private one sig text extends FName {}
-private one sig Authorship extends FName {}
+sig Vehicle extends Obj {}
+sig Employee extends Obj {}
+sig Driver extends Obj {}
+sig Insurance extends Obj {}
+sig License extends Obj {}
+sig Company extends Obj {}
+sig Car extends Obj {}
+sig Truck extends Obj {}
+private one sig regDate extends FName {}
+private one sig licensePlate extends FName {}
+private one sig drivenBy extends FName {}
+private one sig type_Date extends Val {}
 private one sig type_String extends Val {}
-private one sig administrator extends FName {}
-private one sig Membership extends FName {}
-private one sig Releated extends FName {}
-private one sig Posted extends FName {}
+private one sig ins extends FName {}
+private one sig exp extends FName {}
+private one sig license extends FName {}
+private one sig drives extends FName {}
+private one sig kind extends FName {}
+private one sig cars extends FName {}
+private one sig emps extends FName {}
+private one sig enum_InsuranceKind_transport extends EnumVal {}
+private one sig enum_InsuranceKind_international extends EnumVal {}
+private one sig enum_DrivingExp_beginner extends EnumVal {}
+private one sig enum_DrivingExp_expert extends EnumVal {}
+fun VehicleSubsCD: set Obj { Vehicle +  Car +  Truck }
+fun EmployeeSubsCD: set Obj { Employee +  Driver }
+fun DriverSubsCD: set Obj { Driver }
+fun InsuranceSubsCD: set Obj { Insurance }
+fun LicenseSubsCD: set Obj { License }
+fun CompanySubsCD: set Obj { Company }
+fun CarSubsCD: set Obj { Car }
+fun TruckSubsCD: set Obj { Truck }
 
-fun ProfessorSubsCD: set Obj { Professor }
-fun StudentSubsCD: set Obj { Student }
-fun UserSubsCD: set Obj { User +  Professor +  Student }
-fun MessageSubsCD: set Obj { Message }
-fun GroupSubsCD: set Obj { Group }
-fun ChatSubsCD: set Obj { Chat }
 
-
+fun InsuranceKindEnumCD: set EnumVal {
+	enum_InsuranceKind_transport+
+	enum_InsuranceKind_international 
+}
+fun DrivingExpEnumCD: set EnumVal {
+	enum_DrivingExp_beginner+
+	enum_DrivingExp_expert 
+}
 
 
 
 fact {
 
-	no Professor.get[FName]
-	no Student.get[FName]
-	no User.get[FName]
-	no User
-
+	no License.get[FName]
+	no Vehicle
+	#Truck.get[drivenBy] = 1
 }
 
 pred cd {
-ObjAttrib[Message, tags, UserSubsCD]
-ObjAttrib[Message, text, type_String]
-ObjAttrib[Group, administrator, StudentSubsCD]
+ObjAttrib[Driver, exp, DrivingExpEnumCD]
+ObjAttrib[Insurance, kind, InsuranceKindEnumCD]
+ObjAttrib[Car, licensePlate, type_String]
+ObjAttrib[Car, regDate, type_Date]
+ObjAttrib[Truck, licensePlate, type_String]
+ObjAttrib[Truck, regDate, type_Date]
 
 
-ObjFNames[Message, tags + text + Authorship]
-ObjFNames[Group, administrator + Membership + Releated]
-ObjFNames[Chat, Posted]
+ObjFNames[Employee, ins]
+ObjFNames[Driver, exp + license + drives + ins]
+ObjFNames[Insurance, kind]
+ObjFNames[Company, cars + emps]
+ObjFNames[Car, regDate + licensePlate + drivenBy]
+ObjFNames[Truck, regDate + licensePlate + drivenBy]
 
 
-Obj = Professor + Student + Message + Group + Chat
+Obj = Vehicle + Employee + Driver + Insurance + License + Company + Car + Truck
 
 
 
 
 
-ObjLUAttrib[MessageSubsCD, Authorship, UserSubsCD, 1, 1]
-ObjLAttrib[GroupSubsCD, Membership, UserSubsCD, 1]
-ObjLUAttrib[GroupSubsCD, Releated, ChatSubsCD, 1, 1]
-ObjLAttrib[ChatSubsCD, Posted, MessageSubsCD, 1]
-ObjL[UserSubsCD, Authorship, MessageSubsCD, 0]
-ObjL[UserSubsCD, Membership, GroupSubsCD, 1]
-ObjLU[ChatSubsCD, Releated, GroupSubsCD, 1, 1]
-ObjL[MessageSubsCD, Posted, ChatSubsCD, 1]
+ObjLAttrib[VehicleSubsCD, drivenBy, DriverSubsCD, 0]
+ObjLUAttrib[EmployeeSubsCD, ins, InsuranceSubsCD, 1, 1]
+ObjLUAttrib[DriverSubsCD, license, LicenseSubsCD, 0, 3]
+ObjLUAttrib[DriverSubsCD, drives, VehicleSubsCD, 0, 1]
+ObjLAttrib[CompanySubsCD, cars, CarSubsCD, 0]
+ObjLAttrib[CompanySubsCD, emps, EmployeeSubsCD, 0]
+ObjLU[DriverSubsCD, drivenBy, VehicleSubsCD, 1, 1]
+ObjLU[InsuranceSubsCD, ins, EmployeeSubsCD, 1, 1]
+ObjLU[LicenseSubsCD, license, DriverSubsCD, 1, 1]
+ObjLU[VehicleSubsCD, drives, DriverSubsCD, 1, 1]
+ObjLU[CarSubsCD, cars, CompanySubsCD, 0, 1]
+ObjL[EmployeeSubsCD, emps, CompanySubsCD, 0]
 }
 run cd for 10

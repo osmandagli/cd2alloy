@@ -1,4 +1,4 @@
-from src.models.UMLClass import UMLClass
+from models.UMLClass import UMLClass
 
 def all_class_names(classes) -> list:
     classNames = []

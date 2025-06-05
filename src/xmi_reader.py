@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
-from src.models import UMLClass
-from src.models import AssociationClass
+from models import UMLClass
+from models import AssociationClass
 import re
 from math import inf
 
@@ -86,16 +86,21 @@ def read_xmi(xmi_file) -> dict[str, UMLClass]:
         
     # Extract inheritance relationships
     for generalization in root.findall(".//UML:Generalization", namespace):
-        child_id = generalization.find(
-            ".//UML:Generalization.child/UML:Class", namespace
-        ).get("xmi.idref")
-        parent_id = generalization.find(
-            ".//UML:Generalization.parent/UML:Class", namespace
-        ).get("xmi.idref")
+        child_id = generalization.get("child")
+        parent_id = generalization.get("parent")
 
-        if child_id in classes and parent_id in classes:
-            classes[child_id].set_inheritance(parent_id)
-            classes[parent_id].add_child(child_id)
+        if child_id is not None and parent_id is not None:
+            print(f"Child: {child_id}, Parent: {parent_id}")
+
+            if child_id in classes and parent_id in classes:
+                classes[child_id].set_inheritance(parent_id)
+                classes[parent_id].add_child(child_id)
+            else:
+                print(f"Warning: Child ID {child_id} or Parent ID {parent_id} not found in classes  dictionary for a generalization.")
+        else:
+            print(f"Warning: Missing 'child' or 'parent' attribute in generalization: {ET.tostring(generalization)}")
+
+
 
     # Extract associations and store them as AssociationClass instances
     for assoc in root.findall(".//UML:Association", namespace):

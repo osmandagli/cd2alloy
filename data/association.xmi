@@ -9,81 +9,108 @@
     <XMI.content>
         <UML:Model name="PlantUML" xmi.id="model1">
             <UML:Namespace.ownedElement>
-                <UML:Class name="Professor" xmi.id="ent0002">
-                    <UML:Classifier.feature/>
-                </UML:Class>
-                <UML:Class name="Student" xmi.id="ent0003">
-                    <UML:Classifier.feature/>
-                </UML:Class>
-                <UML:Class isAbstract="true" name="User" xmi.id="ent0004">
-                    <UML:Classifier.feature/>
-                </UML:Class>
-                <UML:Class name="Message" xmi.id="ent0005">
+                <UML:Class name="InsuranceKind" xmi.id="ent0002">
                     <UML:Classifier.feature>
-                        <UML:Attribute name="tags : User" xmi.id="att14"/>
-                        <UML:Attribute name="text : String" xmi.id="att15"/>
+                        <UML:Attribute name="transport" xmi.id="att21"/>
+                        <UML:Attribute name="international" xmi.id="att22"/>
                     </UML:Classifier.feature>
                 </UML:Class>
-                <UML:Class name="Group" xmi.id="ent0006">
+                <UML:Class name="DrivingExp" xmi.id="ent0003">
                     <UML:Classifier.feature>
-                        <UML:Attribute name="administrator : Student" xmi.id="att16"/>
+                        <UML:Attribute name="beginner" xmi.id="att23"/>
+                        <UML:Attribute name="expert" xmi.id="att24"/>
                     </UML:Classifier.feature>
                 </UML:Class>
-                <UML:Class name="Chat" xmi.id="ent0007">
+                <UML:Class isAbstract="true" name="Vehicle" xmi.id="ent0004">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="regDate : Date" xmi.id="att25"/>
+                        <UML:Attribute name="licensePlate : String" xmi.id="att26"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Class name="Employee" xmi.id="ent0005">
                     <UML:Classifier.feature/>
                 </UML:Class>
-                <UML:Generalization name="" xmi.id="ass17">
-                    <UML:Generalization.child>
-                        <UML:Class xmi.idref="ent0002"/>
-                    </UML:Generalization.child>
-                    <UML:Generalization.parent>
-                        <UML:Class xmi.idref="ent0004"/>
-                    </UML:Generalization.parent>
-                </UML:Generalization>
-                <UML:Generalization name="" xmi.id="ass18">
-                    <UML:Generalization.child>
-                        <UML:Class xmi.idref="ent0003"/>
-                    </UML:Generalization.child>
-                    <UML:Generalization.parent>
-                        <UML:Class xmi.idref="ent0004"/>
-                    </UML:Generalization.parent>
-                </UML:Generalization>
-                <UML:Association name="Authorship" xmi.id="ass19">
+                <UML:Class name="Driver" xmi.id="ent0006">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="exp : DrivingExp" xmi.id="att27"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Class name="Insurance" xmi.id="ent0007">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="kind : InsuranceKind" xmi.id="att28"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Class name="License" xmi.id="ent0008">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="Company" xmi.id="ent0009">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="Car" xmi.id="ent0010">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="Truck" xmi.id="ent0011">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Generalization child="ent0010" name="" namespace="model1" parent="ent0004" xmi.id="ass29"/>
+                <UML:Generalization child="ent0011" name="" namespace="model1" parent="ent0004" xmi.id="ass30"/>
+                <UML:Generalization child="ent0006" name="" namespace="model1" parent="ent0005" xmi.id="ass31"/>
+                <UML:Association name="ins" namespace="model1" xmi.id="ass32">
                     <UML:Association.connection>
-                        <UML:AssociationEnd association="ass19" name="0..*" type="ent0005" xmi.id="end20">
+                        <UML:AssociationEnd aggregation="aggregate" association="ass32" name="1" type="ent0005" xmi.id="end33">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
-                        <UML:AssociationEnd association="ass19" name="1" type="ent0004" xmi.id="end21">
+                        <UML:AssociationEnd association="ass32" name="1" type="ent0007" xmi.id="end34">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
                     </UML:Association.connection>
                 </UML:Association>
-                <UML:Association name="Membership" xmi.id="ass22">
+                <UML:Association name="cars" namespace="model1" xmi.id="ass35">
                     <UML:Association.connection>
-                        <UML:AssociationEnd association="ass22" name="1..*" type="ent0006" xmi.id="end23">
+                        <UML:AssociationEnd association="ass35" name="0..1" type="ent0009" xmi.id="end36">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
-                        <UML:AssociationEnd association="ass22" name="1..*" type="ent0004" xmi.id="end24">
+                        <UML:AssociationEnd association="ass35" name="*" type="ent0010" xmi.id="end37">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
                     </UML:Association.connection>
                 </UML:Association>
-                <UML:Association name="Releated" xmi.id="ass25">
+                <UML:Association name="emps" namespace="model1" xmi.id="ass38">
                     <UML:Association.connection>
-                        <UML:AssociationEnd association="ass25" name="1" type="ent0006" xmi.id="end26">
+                        <UML:AssociationEnd association="ass38" name="*" type="ent0009" xmi.id="end39">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
-                        <UML:AssociationEnd association="ass25" name="1" type="ent0007" xmi.id="end27">
+                        <UML:AssociationEnd association="ass38" name="*" type="ent0005" xmi.id="end40">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
                     </UML:Association.connection>
                 </UML:Association>
-                <UML:Association name="Posted" xmi.id="ass28">
+                <UML:Association name="license" namespace="model1" xmi.id="ass41">
                     <UML:Association.connection>
-                        <UML:AssociationEnd association="ass28" name="1..*" type="ent0007" xmi.id="end29">
+                        <UML:AssociationEnd association="ass41" name="1" type="ent0006" xmi.id="end42">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
-                        <UML:AssociationEnd association="ass28" name="1..*" type="ent0005" xmi.id="end30">
+                        <UML:AssociationEnd association="ass41" name="0..3" type="ent0008" xmi.id="end43">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Association name="drives" namespace="model1" xmi.id="ass44">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass44" name="1" type="ent0006" xmi.id="end45">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass44" name="0..1" type="ent0004" xmi.id="end46">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Association name="drivenBy" namespace="model1" xmi.id="ass47">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass47" name="1" type="ent0004" xmi.id="end48">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass47" name="0..*" type="ent0006" xmi.id="end49">
                             <UML:AssociationEnd.participant/>
                         </UML:AssociationEnd>
                     </UML:Association.connection>

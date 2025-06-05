@@ -1,6 +1,6 @@
 from math import isinf
 import helpers
-from src import write_to_file, write_alloy_base
+from writer import write_to_file, write_alloy_base
 
 
 def generate_alloy_translation(uml_classes):
@@ -22,7 +22,7 @@ def generate_alloy_translation(uml_classes):
     # Rule U2 & Rule U3: Define Attributes & Associations
     attribute_signatures = []
     for uml_class in uml_classes.values():
-        if uml_class.classType == "class":
+        if uml_class.classType != 'enum':
             # Define Attributes as Signatures
             attribute_signatures.extend(
                 [
@@ -171,7 +171,7 @@ def generate_alloy_translation(uml_classes):
 
     # Rule P4: Define Object Set
     write_to_file(
-        f"Obj = {' + '.join([uml_class.name for uml_class in uml_classes.values() if uml_class.classType == 'class'])}"
+        f"Obj = {' + '.join([uml_class.name for uml_class in uml_classes.values() if uml_class.classType != 'enum'])}"
     )
 
     write_to_file("\n")

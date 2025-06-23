@@ -52,7 +52,6 @@ def read_xmi(xmi_file) -> dict[str, UMLClass]:
         classes[class_id] = UMLClass(class_id, class_name)
         
         if uml_class.get("isAbstract", None) == "true":
-            print("inside")
             classes[class_id].classType = "abstract"
 
         
@@ -90,7 +89,6 @@ def read_xmi(xmi_file) -> dict[str, UMLClass]:
         parent_id = generalization.get("parent")
 
         if child_id is not None and parent_id is not None:
-            print(f"Child: {child_id}, Parent: {parent_id}")
 
             if child_id in classes and parent_id in classes:
                 classes[child_id].set_inheritance(parent_id)
@@ -121,6 +119,7 @@ def read_xmi(xmi_file) -> dict[str, UMLClass]:
             assoc_type = (
                 ends[0].get("aggregation") or ends[1].get("aggregation") or "default"
             )
+            
             end1_type = ends[0].get("type", "Unknown")
             end2_type = ends[1].get("type", "Unknown")
 

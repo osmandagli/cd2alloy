@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?><XMI xmlns:UML="href://org.omg/UML/1.3" xmi.version="1.1">
+    <XMI.header>
+        <XMI.documentation>
+            <XMI.exporter>PlantUML</XMI.exporter>
+            <XMI.exporterVersion>1.2025.2</XMI.exporterVersion>
+        </XMI.documentation>
+        <XMI.metamodel xmi.name="UML" xmi.version="1.4"/>
+    </XMI.header>
+    <XMI.content>
+        <UML:Model name="PlantUML" xmi.id="model1">
+            <UML:Namespace.ownedElement>
+                <UML:Class isAbstract="true" name="VAT" xmi.id="ent0002">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="VAT4" xmi.id="ent0003">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="VAT10" xmi.id="ent0004">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="VAT22" xmi.id="ent0005">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class isAbstract="true" name="Product" xmi.id="ent0006">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="Meat" xmi.id="ent0007">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="vat : VAT10" xmi.id="att32"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Class name="BasicGrocery" xmi.id="ent0008">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="vat : VAT4" xmi.id="att33"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Class name="Other" xmi.id="ent0009">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="vat : VAT22" xmi.id="att34"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Class name="Username" xmi.id="ent0010">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="Password" xmi.id="ent0011">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="User" xmi.id="ent0012">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="ProductSet" xmi.id="ent0013">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="Cart" xmi.id="ent0014">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="Order" xmi.id="ent0015">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="UserAccount" xmi.id="ent0016">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="uname: Username" xmi.id="att35"/>
+                        <UML:Attribute name="pwd: Password" xmi.id="att36"/>
+                        <UML:Attribute name="orders: Order" xmi.id="att37"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Class name="OnlineShop" xmi.id="ent0017">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Generalization name="" xmi.id="ass38">
+                    <UML:Generalization.child>
+                        <UML:Class xmi.idref="ent0003"/>
+                    </UML:Generalization.child>
+                    <UML:Generalization.parent>
+                        <UML:Class xmi.idref="ent0002"/>
+                    </UML:Generalization.parent>
+                </UML:Generalization>
+                <UML:Generalization name="" xmi.id="ass39">
+                    <UML:Generalization.child>
+                        <UML:Class xmi.idref="ent0004"/>
+                    </UML:Generalization.child>
+                    <UML:Generalization.parent>
+                        <UML:Class xmi.idref="ent0002"/>
+                    </UML:Generalization.parent>
+                </UML:Generalization>
+                <UML:Generalization name="" xmi.id="ass40">
+                    <UML:Generalization.child>
+                        <UML:Class xmi.idref="ent0005"/>
+                    </UML:Generalization.child>
+                    <UML:Generalization.parent>
+                        <UML:Class xmi.idref="ent0002"/>
+                    </UML:Generalization.parent>
+                </UML:Generalization>
+                <UML:Generalization name="" xmi.id="ass41">
+                    <UML:Generalization.child>
+                        <UML:Class xmi.idref="ent0007"/>
+                    </UML:Generalization.child>
+                    <UML:Generalization.parent>
+                        <UML:Class xmi.idref="ent0006"/>
+                    </UML:Generalization.parent>
+                </UML:Generalization>
+                <UML:Generalization name="" xmi.id="ass42">
+                    <UML:Generalization.child>
+                        <UML:Class xmi.idref="ent0008"/>
+                    </UML:Generalization.child>
+                    <UML:Generalization.parent>
+                        <UML:Class xmi.idref="ent0006"/>
+                    </UML:Generalization.parent>
+                </UML:Generalization>
+                <UML:Generalization name="" xmi.id="ass43">
+                    <UML:Generalization.child>
+                        <UML:Class xmi.idref="ent0009"/>
+                    </UML:Generalization.child>
+                    <UML:Generalization.parent>
+                        <UML:Class xmi.idref="ent0006"/>
+                    </UML:Generalization.parent>
+                </UML:Generalization>
+                <UML:Association name="vat" xmi.id="ass44">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass44" name="1" type="ent0006" xmi.id="end45">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass44" name="1" type="ent0002" xmi.id="end46">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Generalization name="" xmi.id="ass47">
+                    <UML:Generalization.child>
+                        <UML:Class xmi.idref="ent0014"/>
+                    </UML:Generalization.child>
+                    <UML:Generalization.parent>
+                        <UML:Class xmi.idref="ent0013"/>
+                    </UML:Generalization.parent>
+                </UML:Generalization>
+                <UML:Generalization name="" xmi.id="ass48">
+                    <UML:Generalization.child>
+                        <UML:Class xmi.idref="ent0015"/>
+                    </UML:Generalization.child>
+                    <UML:Generalization.parent>
+                        <UML:Class xmi.idref="ent0013"/>
+                    </UML:Generalization.parent>
+                </UML:Generalization>
+                <UML:Association name="cart" xmi.id="ass49">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass49" name="1" type="ent0016" xmi.id="end50">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass49" name="1" type="ent0014" xmi.id="end51">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Association name="products" xmi.id="ass52">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass52" name="1" type="ent0013" xmi.id="end53">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass52" name="0..*" type="ent0006" xmi.id="end54">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Association name="products" xmi.id="ass55">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass55" name="1" type="ent0017" xmi.id="end56">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass55" name="1..*" type="ent0006" xmi.id="end57">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Association name="accounts" xmi.id="ass58">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass58" name="1" type="ent0017" xmi.id="end59">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass58" name="1..*" type="ent0016" xmi.id="end60">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Association name="accounts" xmi.id="ass61">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass61" name="1" type="ent0012" xmi.id="end62">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass61" name="1..*" type="ent0016" xmi.id="end63">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+            </UML:Namespace.ownedElement>
+        </UML:Model>
+    </XMI.content>
+</XMI>

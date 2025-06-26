@@ -3,16 +3,18 @@
 Obj represents classes
 Get return the corresponding value
 */
-abstract sig Obj { get: FName -> {Obj + EnumVal} }
+abstract sig Obj { get: FName -> {Obj + Val + EnumVal} }
 // FName represents associations
 abstract sig FName {}
+// Val represents unknown types
+abstract sig Val {}
 // EnumVal represents enum values
 abstract sig EnumVal {}
 
 /*
 This predicates ensures that if you have a field for a class’s attribute, ObjAttrib guarantees that every object retrieves exactly one value and that the value is of the correct type.
 */
-pred ObjAttrib[objs: set Obj, fName: one FName, fType: set {Obj + EnumVal}] {
+pred ObjAttrib[objs: set Obj, fName: one FName, fType: set {Obj + Val + EnumVal}] {
 objs.get[fName] in fType
 all o: objs| one o.get[fName]
 }
@@ -96,95 +98,92 @@ ObjU[objs, fName, fType, up]
 fun getInv[target: Obj, field: FName]: set Obj {
 { o: Obj | target in o.get[field] }
 }
-sig CandidateInfo extends Obj {}
-sig Area extends Obj {}
-sig Election extends Obj {}
-sig Race extends Obj {}
-sig Candidate extends Obj {}
-sig Party extends Obj {}
-sig BlankPreference extends Obj {}
-sig FilledPreference extends Obj {}
-sig Preference extends Obj {}
-sig Ballot extends Obj {}
-sig VoteTracker extends Obj {}
-private one sig hasRaces extends FName {}
-private one sig hasCandidate extends FName {}
-private one sig info extends FName {}
-private one sig affiliated extends FName {}
-private one sig votes extends FName {}
-private one sig validity extends FName {}
-private one sig post extends FName {}
-private one sig inBallot extends FName {}
-private one sig e extends FName {}
-private one sig area extends FName {}
-private one sig stores extends FName {}
-private one sig enum_Validity_valid extends EnumVal {}
-private one sig enum_Validity_invalid extends EnumVal {}
-fun CandidateInfoSubsCD: set Obj { CandidateInfo }
-fun AreaSubsCD: set Obj { Area }
-fun ElectionSubsCD: set Obj { Election }
-fun RaceSubsCD: set Obj { Race }
-fun CandidateSubsCD: set Obj { Candidate }
-fun PartySubsCD: set Obj { Party }
-fun BlankPreferenceSubsCD: set Obj { BlankPreference }
-fun FilledPreferenceSubsCD: set Obj { FilledPreference }
-fun PreferenceSubsCD: set Obj { Preference +  BlankPreference +  FilledPreference }
-fun BallotSubsCD: set Obj { Ballot }
-fun VoteTrackerSubsCD: set Obj { VoteTracker }
+sig Vehicle extends Obj {}
+sig Employee extends Obj {}
+sig Driver extends Obj {}
+sig Insurance extends Obj {}
+sig License extends Obj {}
+sig Company extends Obj {}
+sig Car extends Obj {}
+sig Truck extends Obj {}
+private one sig regDate extends FName {}
+private one sig licensePlate extends FName {}
+private one sig drivenBy extends FName {}
+private one sig type_Date extends Val {}
+private one sig type_String extends Val {}
+private one sig ins extends FName {}
+private one sig exp extends FName {}
+private one sig license extends FName {}
+private one sig drives extends FName {}
+private one sig kind extends FName {}
+private one sig cars extends FName {}
+private one sig emps extends FName {}
+private one sig enum_InsuranceKind_transport extends EnumVal {}
+private one sig enum_InsuranceKind_international extends EnumVal {}
+private one sig enum_DrivingExp_beginner extends EnumVal {}
+private one sig enum_DrivingExp_expert extends EnumVal {}
+fun VehicleSubsCD: set Obj { Vehicle +  Car +  Truck }
+fun EmployeeSubsCD: set Obj { Employee +  Driver }
+fun DriverSubsCD: set Obj { Driver }
+fun InsuranceSubsCD: set Obj { Insurance }
+fun LicenseSubsCD: set Obj { License }
+fun CompanySubsCD: set Obj { Company }
+fun CarSubsCD: set Obj { Car }
+fun TruckSubsCD: set Obj { Truck }
 
 
-fun ValidityEnumCD: set EnumVal {
-	enum_Validity_valid+
-	enum_Validity_invalid 
+fun InsuranceKindEnumCD: set EnumVal {
+	enum_InsuranceKind_transport+
+	enum_InsuranceKind_international 
+}
+fun DrivingExpEnumCD: set EnumVal {
+	enum_DrivingExp_beginner+
+	enum_DrivingExp_expert 
 }
 
 
-fun RaceCompFieldsCD:Obj->Obj {
-   rel[ElectionSubsCD, hasRaces]
-}
+
 fact {
 
-	no CandidateInfo.get[FName]
-	no Area.get[FName]
-	no Party.get[FName]
+	no License.get[FName]
+	no Vehicle
+
 }
 
 pred cd {
-ObjAttrib[Candidate, info, CandidateInfoSubsCD]
-ObjAttrib[BlankPreference, post, RaceSubsCD]
-ObjAttrib[FilledPreference, votes, CandidateSubsCD]
-ObjAttrib[FilledPreference, post, RaceSubsCD]
-ObjAttrib[FilledPreference, validity, ValidityEnumCD]
-ObjAttrib[Preference, post, RaceSubsCD]
-ObjAttrib[Ballot, e, ElectionSubsCD]
-ObjAttrib[VoteTracker, area, AreaSubsCD]
+ObjAttrib[Driver, exp, DrivingExpEnumCD]
+ObjAttrib[Insurance, kind, InsuranceKindEnumCD]
+ObjAttrib[Car, licensePlate, type_String]
+ObjAttrib[Car, regDate, type_Date]
+ObjAttrib[Truck, licensePlate, type_String]
+ObjAttrib[Truck, regDate, type_Date]
 
 
-ObjFNames[Election, hasRaces]
-ObjFNames[Race, hasCandidate]
-ObjFNames[Candidate, info + affiliated]
-ObjFNames[BlankPreference, post + inBallot]
-ObjFNames[FilledPreference, votes + validity + post + inBallot]
-ObjFNames[Preference, post + inBallot]
-ObjFNames[Ballot, e]
-ObjFNames[VoteTracker, area + stores]
+ObjFNames[Employee, ins]
+ObjFNames[Driver, exp + license + drives + ins]
+ObjFNames[Insurance, kind]
+ObjFNames[Company, cars + emps]
+ObjFNames[Car, regDate + licensePlate + drivenBy]
+ObjFNames[Truck, regDate + licensePlate + drivenBy]
 
 
-Obj = CandidateInfo + Area + Election + Race + Candidate + Party + BlankPreference + FilledPreference + Preference + Ballot + VoteTracker
+Obj = Vehicle + Employee + Driver + Insurance + License + Company + Car + Truck
 
 
-Composition[RaceCompFieldsCD, RaceSubsCD]
 
 
-ObjLAttrib[ElectionSubsCD, hasRaces, RaceSubsCD, 1]
-ObjLAttrib[RaceSubsCD, hasCandidate, CandidateSubsCD, 1]
-ObjLUAttrib[CandidateSubsCD, affiliated, PartySubsCD, 1, 1]
-ObjLAttrib[PreferenceSubsCD, inBallot, BallotSubsCD, 1]
-ObjLAttrib[VoteTrackerSubsCD, stores, PreferenceSubsCD, 1]
-ObjLU[RaceSubsCD, hasRaces, ElectionSubsCD, 1, 1]
-ObjLU[CandidateSubsCD, hasCandidate, RaceSubsCD, 1, 1]
-ObjL[PartySubsCD, affiliated, CandidateSubsCD, 1]
-ObjL[BallotSubsCD, inBallot, PreferenceSubsCD, 1]
-ObjL[PreferenceSubsCD, stores, VoteTrackerSubsCD, 1]
+
+ObjLAttrib[VehicleSubsCD, drivenBy, DriverSubsCD, 0]
+ObjLUAttrib[EmployeeSubsCD, ins, InsuranceSubsCD, 1, 1]
+ObjLUAttrib[DriverSubsCD, license, LicenseSubsCD, 0, 3]
+ObjLUAttrib[DriverSubsCD, drives, VehicleSubsCD, 0, 1]
+ObjLAttrib[CompanySubsCD, cars, CarSubsCD, 0]
+ObjLAttrib[CompanySubsCD, emps, EmployeeSubsCD, 0]
+ObjLU[DriverSubsCD, drivenBy, VehicleSubsCD, 1, 1]
+ObjLU[InsuranceSubsCD, ins, EmployeeSubsCD, 1, 1]
+ObjLU[LicenseSubsCD, license, DriverSubsCD, 1, 1]
+ObjLU[VehicleSubsCD, drives, DriverSubsCD, 1, 1]
+ObjLU[CarSubsCD, cars, CompanySubsCD, 0, 1]
+ObjL[EmployeeSubsCD, emps, CompanySubsCD, 0]
 }
 run cd for 10

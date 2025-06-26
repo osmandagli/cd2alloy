@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><XMI xmlns:UML="href://org.omg/UML/1.3" xmi.version="1.1">
+    <XMI.header>
+        <XMI.documentation>
+            <XMI.exporter>PlantUML</XMI.exporter>
+            <XMI.exporterVersion>1.2025.2</XMI.exporterVersion>
+        </XMI.documentation>
+        <XMI.metamodel xmi.name="UML" xmi.version="1.4"/>
+    </XMI.header>
+    <XMI.content>
+        <UML:Model name="PlantUML" xmi.id="model1">
+            <UML:Namespace.ownedElement>
+                <UML:Class name="Validity" xmi.id="ent0002">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="valid" xmi.id="att23"/>
+                        <UML:Attribute name="invalid" xmi.id="att24"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Class name="CandidateInfo" xmi.id="ent0003">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="Area" xmi.id="ent0004">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="Election" xmi.id="ent0005">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="Race" xmi.id="ent0006">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="Candidate" xmi.id="ent0007">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="info : CandidateInfo" xmi.id="att25"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Class name="Party" xmi.id="ent0008">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="BlankPreference" xmi.id="ent0009">
+                    <UML:Classifier.feature/>
+                </UML:Class>
+                <UML:Class name="FilledPreference" xmi.id="ent0010">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="votes : Candidate" xmi.id="att26"/>
+                        <UML:Attribute name="validity : Validity" xmi.id="att27"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Class name="Preference" xmi.id="ent0011">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="post : Race" xmi.id="att28"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Class name="Ballot" xmi.id="ent0012">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="e : Election" xmi.id="att29"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Class name="VoteTracker" xmi.id="ent0013">
+                    <UML:Classifier.feature>
+                        <UML:Attribute name="area : Area" xmi.id="att30"/>
+                    </UML:Classifier.feature>
+                </UML:Class>
+                <UML:Generalization child="ent0009" name="" namespace="model1" parent="ent0011" xmi.id="ass31"/>
+                <UML:Generalization child="ent0010" name="" namespace="model1" parent="ent0011" xmi.id="ass32"/>
+                <UML:Association name="stores" namespace="model1" xmi.id="ass33">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass33" name="1..*" type="ent0013" xmi.id="end34">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass33" name="1..*" type="ent0011" xmi.id="end35">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Association name="inBallot" namespace="model1" xmi.id="ass36">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass36" name="1..*" type="ent0011" xmi.id="end37">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass36" name="1..*" type="ent0012" xmi.id="end38">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Association name="hasRaces" namespace="model1" xmi.id="ass39">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd aggregation="composite" association="ass39" name="1" type="ent0005" xmi.id="end40">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass39" name="1..*" type="ent0006" xmi.id="end41">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Association name="hasCandidate" namespace="model1" xmi.id="ass42">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass42" name="1" type="ent0006" xmi.id="end43">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass42" name="1..*" type="ent0007" xmi.id="end44">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+                <UML:Association name="affiliated" namespace="model1" xmi.id="ass45">
+                    <UML:Association.connection>
+                        <UML:AssociationEnd association="ass45" name="1..*" type="ent0007" xmi.id="end46">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                        <UML:AssociationEnd association="ass45" name="1" type="ent0008" xmi.id="end47">
+                            <UML:AssociationEnd.participant/>
+                        </UML:AssociationEnd>
+                    </UML:Association.connection>
+                </UML:Association>
+            </UML:Namespace.ownedElement>
+        </UML:Model>
+    </XMI.content>
+</XMI>

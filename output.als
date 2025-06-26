@@ -152,9 +152,9 @@ fact {
 pred cd {
 ObjAttrib[Candidate, info, CandidateInfoSubsCD]
 ObjAttrib[BlankPreference, post, RaceSubsCD]
-ObjAttrib[FilledPreference, validity, ValidityEnumCD]
 ObjAttrib[FilledPreference, votes, CandidateSubsCD]
 ObjAttrib[FilledPreference, post, RaceSubsCD]
+ObjAttrib[FilledPreference, validity, ValidityEnumCD]
 ObjAttrib[Preference, post, RaceSubsCD]
 ObjAttrib[Ballot, e, ElectionSubsCD]
 ObjAttrib[VoteTracker, area, AreaSubsCD]

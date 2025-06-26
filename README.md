@@ -26,7 +26,7 @@ cd cd2alloy
 Copy the `.xmi` file you created and place it in the `data/` directory:
 
 ```bash
-cp <cd_name>.xmi data/cd.xmi
+cp <PlantUML_workspace>/<cd_name>.xmi data/cd.xmi
 ```
 
 ### 5. Run the Translator
@@ -54,14 +54,14 @@ You can open this file using Alloy Analyzer.
   ```bash
   plantuml -txmi:star <cd_name>.wsd
   ```
-- Plantuml version used in this project is `1.2025.2`
+- The Plantuml version used in this project is `1.2025.2`
 
 ---
 
 ## 📁 Example Files
 
 This repository includes example `.xmi` input and `.als` output files to demonstrate the workflow.  
-You can find them under the `data/` and root directories respectively.
+You can find them under the `data/` and root directories, respectively.
 
 ---
 

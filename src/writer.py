@@ -6,7 +6,7 @@ def write_to_file(content, filename="output.als", mode="a"):
         file.write(content + "\n")  # Ensure newline after each write
 
 def copy_alloy_base_to_output(
-    base_filename="/WORKSPACE/uml2alloy/data/alloy_bases/full_base.als",
+    base_filename="./data/alloy_bases/full_base.als",
     output_filename="output.als"
 ):
     """Reads alloy_base.als and writes it to output.als using write_to_file()."""
@@ -28,13 +28,13 @@ def write_alloy_base(classes) -> None:
     isCustomValNotExists = not helpers.isCustomTypeExists(classes=classes)
     
     if isEnumNotExists and isCustomValNotExists:
-        copy_alloy_base_to_output(base_filename="/WORKSPACE/uml2alloy/data/alloy_bases/no_val_enum_base.als")
+        copy_alloy_base_to_output(base_filename="./data/alloy_bases/no_val_enum_base.als")
     
     elif isEnumNotExists:
-        copy_alloy_base_to_output(base_filename="/WORKSPACE/uml2alloy/data/alloy_bases/no_enum_base.als")
+        copy_alloy_base_to_output(base_filename="./data/alloy_bases/no_enum_base.als")
         
     elif isCustomValNotExists:
-        copy_alloy_base_to_output(base_filename="/WORKSPACE/uml2alloy/data/alloy_bases/no_val_base.als")
+        copy_alloy_base_to_output(base_filename="./data/alloy_bases/no_val_base.als")
     
     else:
         copy_alloy_base_to_output()
